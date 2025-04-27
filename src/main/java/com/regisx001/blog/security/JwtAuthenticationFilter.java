@@ -1,4 +1,4 @@
-package com.regisx001.blog.Security;
+package com.regisx001.blog.security;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.regisx001.blog.Services.AuthenticationService;
+import com.regisx001.blog.services.AuthenticationService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.regisx001.blog.Services;
+package com.regisx001.blog.services;
 
 import org.springframework.security.core.userdetails.UserDetails;
 

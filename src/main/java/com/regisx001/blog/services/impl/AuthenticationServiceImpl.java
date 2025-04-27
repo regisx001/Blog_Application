@@ -1,4 +1,4 @@
-package com.regisx001.blog.Services.impl;
+package com.regisx001.blog.services.impl;
 
 import java.security.Key;
 import java.util.Date;
@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.regisx001.blog.Services.AuthenticationService;
+import com.regisx001.blog.services.AuthenticationService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

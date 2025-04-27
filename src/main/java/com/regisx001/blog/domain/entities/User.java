@@ -1,21 +1,18 @@
-package com.regisx001.blog.Domain.Entities;
+package com.regisx001.blog.domain.entities;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,46 +22,34 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private String name;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
 
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
-    @ManyToMany(fetch = FetchType.EAGER) // roles are loaded immediately
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private LocalDateTime createAt;
 
     @PrePersist
-    public void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
-        this.createdAt = now;
-        this.updatedAt = now;
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    protected void onCreate() {
+        this.createAt = LocalDateTime.now();
     }
 
     @Override
@@ -72,11 +57,10 @@ public class User {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((email == null) ? 0 : email.hashCode());
         result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
-        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((createAt == null) ? 0 : createAt.hashCode());
         return result;
     }
 
@@ -94,11 +78,6 @@ public class User {
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
         if (email == null) {
             if (other.email != null)
                 return false;
@@ -109,15 +88,15 @@ public class User {
                 return false;
         } else if (!password.equals(other.password))
             return false;
-        if (createdAt == null) {
-            if (other.createdAt != null)
+        if (name == null) {
+            if (other.name != null)
                 return false;
-        } else if (!createdAt.equals(other.createdAt))
+        } else if (!name.equals(other.name))
             return false;
-        if (updatedAt == null) {
-            if (other.updatedAt != null)
+        if (createAt == null) {
+            if (other.createAt != null)
                 return false;
-        } else if (!updatedAt.equals(other.updatedAt))
+        } else if (!createAt.equals(other.createAt))
             return false;
         return true;
     }

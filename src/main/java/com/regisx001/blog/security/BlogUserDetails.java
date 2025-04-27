@@ -1,15 +1,19 @@
-package com.regisx001.blog.Security;
+package com.regisx001.blog.security;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.regisx001.blog.Domain.Entities.User;
+import com.regisx001.blog.domain.entities.User;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class BlogUserDetails implements UserDetails {
 
@@ -17,10 +21,7 @@ public class BlogUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles()
-                .stream()
-                .map(role -> (GrantedAuthority) () -> role.getName())
-                .collect(Collectors.toSet());
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
@@ -56,4 +57,5 @@ public class BlogUserDetails implements UserDetails {
     public UUID getId() {
         return user.getId();
     }
+
 }

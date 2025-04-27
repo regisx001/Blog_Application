@@ -1,4 +1,4 @@
-package com.regisx001.blog.Domain.Dtos;
+package com.regisx001.blog.domain.dto;
 
 import java.util.List;
 

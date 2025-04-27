@@ -2,7 +2,7 @@ spring:
   application:
     name: blog
   datasource:
-    url: jdbc:postgresql://localhost:5432/blog_database
+    url: jdbc:postgresql://localhost:5432/postgres
     username: admin
     password: admin123
     driver-class-name: org.postgresql.Driver
@@ -17,3 +17,4 @@ spring:
 
 jwt:
   secret: 9950d5009b26fb01ee90ca6c8ba8fb165173c003b6d49fc9ff9a8852033e93b9s
+  expiration: 86400000L
