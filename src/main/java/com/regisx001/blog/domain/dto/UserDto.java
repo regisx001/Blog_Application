@@ -1,5 +1,6 @@
 package com.regisx001.blog.domain.dto;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -15,4 +16,6 @@ public class UserDto {
     private UUID id;
     private String email;
     private String name;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
