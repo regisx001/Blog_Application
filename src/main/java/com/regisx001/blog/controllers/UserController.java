@@ -30,9 +30,9 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(currentUser));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<User>> allUsers() {
-        List<User> users = userService.allUsers();
+    @GetMapping
+    public ResponseEntity<List<UserDto>> allUsers() {
+        List<UserDto> users = userService.allUsers().stream().map(userMapper::toDto).toList();
         return ResponseEntity.ok(users);
     }
 
