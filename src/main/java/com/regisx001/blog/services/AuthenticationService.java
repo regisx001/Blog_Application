@@ -1,11 +1,16 @@
 package com.regisx001.blog.services;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
+import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
+import com.regisx001.blog.domain.entities.User;
 
 public interface AuthenticationService {
-    UserDetails authenticate(String email, String password);
+    public User register(User user);
 
-    String generateToken(UserDetails userDetails);
+    public User authenticate(LoginUserRequest loginUserRequest);
 
-    UserDetails validateToken(String token);
+    public void verifyUser(VerifyUserRequest verifyUserRequest);
+
+    public void resendVerificationCode(String email);
+
 }

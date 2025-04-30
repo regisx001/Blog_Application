@@ -1,4 +1,4 @@
-package com.regisx001.blog.domain.dto;
+package com.regisx001.blog.domain.dto.responses;
 
 import java.util.List;
 
