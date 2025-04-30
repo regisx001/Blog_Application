@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.mappers.UserMapper;
 import com.regisx001.blog.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,12 +21,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping("/me")
-    public ResponseEntity<User> authenticatedUser() {
+    public ResponseEntity<UserDto> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(currentUser);
+        return ResponseEntity.ok(userMapper.toDto(currentUser));
     }
 
     @GetMapping("/")
