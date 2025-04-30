@@ -68,7 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("Verification code has been expired");
         }
 
-        if (user.getVerificationCode() == verifyUserRequest.getVerificationCode()) {
+        if (user.getVerificationCode().equals(verifyUserRequest.getVerificationCode())) {
             user.setEnabled(true);
             user.setVerificationCode(null);
             user.setVerificationCodeExpiresAt(null);
