@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new IllegalStateException("Account not verified");
         }
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginUserRequest.getEmail(), loginUserRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(user.getUsername(), loginUserRequest.getPassword()));
         return user;
     }
 
