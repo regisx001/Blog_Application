@@ -1,6 +1,7 @@
 package com.regisx001.blog.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             throw new RuntimeException("Refresh token expired. Please sign in again.");
         }
         return token;
+    }
+
+    @Override
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
     }
 
     @Override

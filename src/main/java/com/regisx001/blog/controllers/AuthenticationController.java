@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
 import com.regisx001.blog.domain.dto.requests.RegisterUserRequest;
+import com.regisx001.blog.domain.dto.requests.TokenRefreshRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.dto.responses.LoginResponse;
+import com.regisx001.blog.domain.dto.responses.TokenResponse;
+import com.regisx001.blog.domain.entities.RefreshToken;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.mappers.UserMapper;
 import com.regisx001.blog.services.AuthenticationService;
 import com.regisx001.blog.services.JwtService;
+import com.regisx001.blog.services.RefreshTokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationController {
 
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
     private final AuthenticationService authenticationService;
     private final UserMapper userMapper;
 
@@ -39,8 +44,10 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginUserRequest loginUserRequest) {
         User authenticateUser = authenticationService.authenticate(loginUserRequest);
         String jwtToken = jwtService.generateToken(authenticateUser);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(authenticateUser.getId());
         LoginResponse loginResponse = LoginResponse.builder()
-                .token(jwtToken)
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken.getToken())
                 .expireIn(jwtService.getJwtExpiration()).build();
 
         return ResponseEntity.ok(loginResponse);
@@ -65,4 +72,24 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
+        String requestToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtService.generateToken(user);
+                    // return ResponseEntity.ok(TokenResponse(token, requestToken));
+                    return ResponseEntity
+                            .ok(TokenResponse.builder()
+                                    .accessToken(token)
+                                    .refreshToken(requestToken)
+                                    .build());
+                })
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+    }
+
 }

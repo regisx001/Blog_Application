@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LoginResponse {
+public class TokenResponse {
     private String accessToken;
     private String refreshToken;
-    private long expireIn;
+    private String tokenType = "Bearer";
 }
