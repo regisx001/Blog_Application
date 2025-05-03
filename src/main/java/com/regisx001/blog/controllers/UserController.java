@@ -3,6 +3,8 @@ package com.regisx001.blog.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(path = "api/v1/users")
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class UserController {
+
     private final UserService userService;
     private final UserMapper userMapper;
 
@@ -30,6 +34,7 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(currentUser));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserDto>> allUsers() {
         List<UserDto> users = userService.allUsers().stream().map(userMapper::toDto).toList();
