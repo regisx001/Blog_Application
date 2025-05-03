@@ -3,6 +3,7 @@ package com.regisx001.blog.services.impl;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
+import com.regisx001.blog.domain.entities.Role;
+import com.regisx001.blog.domain.entities.RoleType;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.repositories.RoleRepository;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.AuthenticationService;
 import com.regisx001.blog.services.EmailService;
@@ -28,6 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final RoleRepository roleRepository;
 
     @Override
     public User register(User user) {
@@ -37,6 +42,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
+
+        Role userRole = roleRepository.findByName(RoleType.ROLE_USER);
+        user.setRoles(Set.of(userRole));
+
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
