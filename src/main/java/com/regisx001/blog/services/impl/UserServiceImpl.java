@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> allUsers() {
-        log.error("This is something goes here print hello world");
+        log.info("Retrieving all users from the database.");
         List<User> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
         return users;
