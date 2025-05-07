@@ -14,6 +14,7 @@ import com.regisx001.blog.domain.dto.requests.RegisterUserRequest;
 import com.regisx001.blog.domain.dto.requests.TokenRefreshRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.dto.responses.LoginResponse;
+import com.regisx001.blog.domain.dto.responses.SuccessResponse;
 import com.regisx001.blog.domain.dto.responses.TokenResponse;
 import com.regisx001.blog.domain.entities.RefreshToken;
 import com.regisx001.blog.domain.entities.User;
@@ -57,7 +58,9 @@ public class AuthenticationController {
     public ResponseEntity<?> verifyUser(@RequestBody VerifyUserRequest verifyUserRequest) {
         try {
             authenticationService.verifyUser(verifyUserRequest);
-            return ResponseEntity.ok("Account verified successfully");
+            SuccessResponse response = SuccessResponse.builder().statusCode(200)
+                    .message("Account verified successfully").build();
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -67,7 +70,9 @@ public class AuthenticationController {
     public ResponseEntity<?> resendVerificationCode(@RequestParam String email) {
         try {
             authenticationService.resendVerificationCode(email);
-            return ResponseEntity.ok("Verification code sent");
+            SuccessResponse response = SuccessResponse.builder().statusCode(200)
+                    .message("Verification code sent").build();
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -82,12 +87,12 @@ public class AuthenticationController {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String token = jwtService.generateToken(user);
-                    // return ResponseEntity.ok(TokenResponse(token, requestToken));
+                    TokenResponse response = TokenResponse.builder()
+                            .accessToken(token)
+                            .refreshToken(requestToken)
+                            .build();
                     return ResponseEntity
-                            .ok(TokenResponse.builder()
-                                    .accessToken(token)
-                                    .refreshToken(requestToken)
-                                    .build());
+                            .ok(response);
                 })
                 .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
     }

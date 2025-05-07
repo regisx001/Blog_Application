@@ -52,7 +52,7 @@ public class UserController {
 
         userService.upgradeUserAdmin(updateUserRoleRequest.getUserId(), updateUserRoleRequest.getRoleNames());
         SuccessResponse response = SuccessResponse.builder().statusCode(200)
-                .message("User upgraded to admin succesfully").build();
+                .message("User upgraded to admin successfully").build();
         return new ResponseEntity<SuccessResponse>(response, null, 200);
     }
 }
