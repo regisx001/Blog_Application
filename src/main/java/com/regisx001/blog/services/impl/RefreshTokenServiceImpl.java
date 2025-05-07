@@ -25,6 +25,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshToken createRefreshToken(UUID userId) {
+        Optional<RefreshToken> oldRefreshToken = refreshTokenRepository.findByUserId(userId);
+        if (oldRefreshToken.isPresent()) {
+            refreshTokenRepository.delete(oldRefreshToken.get());
+        }
         RefreshToken token = new RefreshToken();
         token.setUser(userRepository.findById(userId).orElseThrow());
         token.setToken(UUID.randomUUID().toString());

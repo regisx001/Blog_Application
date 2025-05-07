@@ -16,6 +16,7 @@ import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.entities.Role;
 import com.regisx001.blog.domain.entities.RoleType;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.repositories.RefreshTokenRepository;
 import com.regisx001.blog.repositories.RoleRepository;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.AuthenticationService;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
@@ -60,6 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!user.isEnabled()) {
             throw new IllegalStateException("Account not verified");
         }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), loginUserRequest.getPassword()));
         return user;

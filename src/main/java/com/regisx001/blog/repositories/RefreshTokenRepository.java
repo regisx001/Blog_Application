@@ -13,5 +13,7 @@ import com.regisx001.blog.domain.entities.User;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
     Optional<RefreshToken> findByToken(String token);
 
+    Optional<RefreshToken> findByUserId(UUID userId);
+
     void deleteByUser(User user);
 }
