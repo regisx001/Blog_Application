@@ -1,7 +1,7 @@
 package com.regisx001.blog.controllers;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -36,8 +36,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UserDto>> allUsers() {
-        List<UserDto> users = userService.allUsers().stream().map(userMapper::toDto).toList();
+    public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable) {
+        Page<UserDto> users = userService.getAllUsers(pageable);
         return ResponseEntity.ok(users);
     }
 

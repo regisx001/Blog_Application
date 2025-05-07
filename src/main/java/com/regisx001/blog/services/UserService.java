@@ -1,9 +1,9 @@
 package com.regisx001.blog.services;
 
-import java.util.List;
-
-import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.domain.dto.UserDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-    public List<User> allUsers();
+    public Page<UserDto> getAllUsers(Pageable pageable);
 }

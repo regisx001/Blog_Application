@@ -1,12 +1,12 @@
 package com.regisx001.blog.services.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.mappers.UserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.UserService;
 
@@ -18,13 +18,11 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public List<User> allUsers() {
-        log.info("Retrieving all users from the database.");
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
-        return users;
+    public Page<UserDto> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(userMapper::toDto);
     }
 
 }
