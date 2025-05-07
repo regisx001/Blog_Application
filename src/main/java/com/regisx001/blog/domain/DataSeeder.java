@@ -21,8 +21,9 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (roleRepository.count() == 0) {
             roleRepository.saveAll(List.of(
-                    new Role(null, RoleType.ROLE_USER),
-                    new Role(null, RoleType.ROLE_ADMIN)));
+                    // new Role(null, RoleType.ROLE_USER),
+                    Role.builder().name(RoleType.ROLE_USER).build(),
+                    Role.builder().name(RoleType.ROLE_ADMIN).build()));
         }
     }
 }
