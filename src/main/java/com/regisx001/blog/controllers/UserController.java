@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.dto.requests.UpdateUserRoleRequest;
+import com.regisx001.blog.domain.dto.responses.SuccessResponse;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.mappers.UserMapper;
 import com.regisx001.blog.services.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "api/v1/users")
@@ -41,4 +45,14 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(path = "/set-admin")
+    public ResponseEntity<SuccessResponse> setUserToAdmin(
+            @RequestBody UpdateUserRoleRequest updateUserRoleRequest) {
+
+        userService.upgradeUserAdmin(updateUserRoleRequest.getUserId(), updateUserRoleRequest.getRoleNames());
+        SuccessResponse response = SuccessResponse.builder().statusCode(200)
+                .message("User upgraded to admin succesfully").build();
+        return new ResponseEntity<SuccessResponse>(response, null, 200);
+    }
 }
