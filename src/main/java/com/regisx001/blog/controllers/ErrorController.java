@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.responses.ApiErrorResponse;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -54,10 +55,10 @@ public class ErrorController {
         log.error("Caught exception", ex);
         ApiErrorResponse error = ApiErrorResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .message("Incorrect username or password")
+                .message(ex.getMessage())
                 .build();
 
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -68,6 +69,17 @@ public class ErrorController {
                 .message(ex.getMessage())
                 .build();
 
-        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ApiErrorResponse> handleExpiredJwtException(ExpiredJwtException ex) {
+        log.error("Caught exception", ex);
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }
