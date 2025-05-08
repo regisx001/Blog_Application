@@ -89,7 +89,6 @@ public class AuthenticationController {
                     String token = jwtService.generateToken(user);
                     TokenResponse response = TokenResponse.builder()
                             .accessToken(token)
-                            .refreshToken(requestToken)
                             .build();
                     return ResponseEntity
                             .ok(response);
