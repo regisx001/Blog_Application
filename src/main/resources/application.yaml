@@ -39,3 +39,7 @@ security:
     expiration-time: 3600000
     refresh-token:
       expiration-ms: 604800000
+
+logging:
+  level:
+    com.regisx001: INFO
