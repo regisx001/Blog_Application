@@ -13,4 +13,6 @@ public interface AuthenticationService {
 
     public void resendVerificationCode(String email);
 
+    public void sendVerificationEmail(User user);
+
 }

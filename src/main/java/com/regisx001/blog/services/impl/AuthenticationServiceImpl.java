@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -106,7 +107,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
 
-        sendVerificationEmail(user);
         userRepository.save(user);
     }
 
@@ -116,7 +116,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return String.valueOf(code);
     }
 
-    private void sendVerificationEmail(User user) {
+    @Async
+    @Override
+    public void sendVerificationEmail(User user) {
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"
