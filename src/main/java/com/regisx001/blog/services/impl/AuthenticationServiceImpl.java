@@ -122,14 +122,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"
-                + "<body style=\"font-family: Arial, sans-serif;\">"
-                + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
-                + "<h2 style=\"color: #333;\">Welcome to our app!</h2>"
-                + "<p style=\"font-size: 16px;\">Please enter the verification code below to continue:</p>"
-                + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
-                + "<h3 style=\"color: #333;\">Verification Code:</h3>"
-                + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff;\">" + verificationCode + "</p>"
+                + "<body style=\"font-family: Arial, sans-serif; background-color: #f4f7fc; padding: 30px;\">"
+                + "<div style=\"max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); padding: 20px;\">"
+                + "<h2 style=\"color: #4CAF50; text-align: center; font-size: 26px;\">Welcome to Our App!</h2>"
+                + "<p style=\"font-size: 16px; color: #555; text-align: center; margin-bottom: 20px;\">We are excited to have you on board. Please use the verification code below to verify your account:</p>"
+                + "<div style=\"background-color: #f9f9f9; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); text-align: center;\">"
+                + "<h3 style=\"color: #333; font-size: 20px;\">Your Verification Code</h3>"
+                + "<p style=\"font-size: 24px; font-weight: bold; color: #007bff; padding: 10px 20px; background-color: #e0f7fa; border-radius: 5px;\">"
+                + verificationCode
+                + "</p>"
                 + "</div>"
+                + "<p style=\"font-size: 14px; color: #888; text-align: center; margin-top: 20px;\">If you did not request this, please ignore this email.</p>"
+                + "<p style=\"font-size: 14px; color: #888; text-align: center;\">Best regards,<br>Our App Team</p>"
                 + "</div>"
                 + "</body>"
                 + "</html>";
