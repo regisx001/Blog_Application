@@ -116,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return String.valueOf(code);
     }
 
-    @Async
+    @Async("taskExecutor")
     @Override
     public void sendVerificationEmail(User user) {
         String subject = "Account Verification";

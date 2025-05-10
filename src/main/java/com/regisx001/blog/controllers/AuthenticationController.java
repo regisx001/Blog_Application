@@ -24,10 +24,12 @@ import com.regisx001.blog.services.JwtService;
 import com.regisx001.blog.services.RefreshTokenService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationController {
 
     private final JwtService jwtService;
