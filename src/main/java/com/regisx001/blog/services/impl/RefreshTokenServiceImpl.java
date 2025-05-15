@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.entities.RefreshToken;
+import com.regisx001.blog.exceptions.ExpiredRefreshTokenException;
 import com.regisx001.blog.repositories.RefreshTokenRepository;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.RefreshTokenService;
@@ -42,7 +43,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
             refreshTokenRepository.delete(token);
-            throw new RuntimeException("Refresh token expired. Please sign in again.");
+            throw new ExpiredRefreshTokenException("Refresh token expired. Please sign in again.");
         }
         return token;
     }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.responses.ApiErrorResponse;
+import com.regisx001.blog.exceptions.ExpiredRefreshTokenException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -81,5 +82,16 @@ public class ErrorController {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ExpiredRefreshTokenException.class)
+    public ResponseEntity<ApiErrorResponse> handleExpiredRefreshTokenException(ExpiredRefreshTokenException ex) {
+        log.error("Caught exception", ex);
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
