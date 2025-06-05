@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
-        sendVerificationEmail(user);
+        // sendVerificationEmail(user);
         return userRepository.save(user);
     }
 

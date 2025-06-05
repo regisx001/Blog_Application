@@ -1,0 +1,3 @@
+ALTER TABLE users
+ADD COLUMN avatar VARCHAR(255),
+ADD COLUMN cover_image VARCHAR(255);

@@ -60,6 +60,13 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
+
+    private String avatar;
+
+    private String coverImage;
+
+
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

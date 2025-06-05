@@ -43,3 +43,7 @@ security:
 logging:
   level:
     com.regisx001: INFO
+
+file:
+  upload-dir:
+    uploads: /uploads
