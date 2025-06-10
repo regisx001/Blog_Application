@@ -41,6 +41,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new IllegalArgumentException("An account with this email : " + user.getEmail() + " already exist.");
         }
 
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new IllegalArgumentException(
+                    "An account with this username : " + user.getUsername() + " already exist.");
+        }
+
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
 
