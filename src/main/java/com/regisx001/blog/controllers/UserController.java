@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRoleRequest;
 import com.regisx001.blog.domain.dto.responses.SuccessResponse;
 import com.regisx001.blog.domain.entities.User;
@@ -25,6 +26,7 @@ import com.regisx001.blog.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -64,6 +66,14 @@ public class UserController {
     @PostMapping(path = "/{userId}/avatar")
     public ResponseEntity<?> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatarFile) {
         User updatedUser = userService.uploadAvatar(userId, avatarFile);
+        return ResponseEntity.ok(userMapper.toDto(updatedUser));
+    }
+
+    @PutMapping(path = "/{userId}")
+    public ResponseEntity<?> updateUser(@PathVariable UUID userId, @RequestBody UpdateUserRequest updateUserRequest) {
+
+        User updatedUser = userService.updateUser(userId, updateUserRequest);
+
         return ResponseEntity.ok(userMapper.toDto(updatedUser));
     }
 

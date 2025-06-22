@@ -1,6 +1,7 @@
 package com.regisx001.blog.services.impl;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.Role;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.mappers.UserMapper;
@@ -58,6 +59,18 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         String avatarFileName = storageService.store(file);
         user.setAvatar(avatarFileName);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(UUID userId, UpdateUserRequest updateUserRequest) {
+        if (userRepository.findByUsername(updateUserRequest.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already in use");
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setUsername(updateUserRequest.getUsername());
         return userRepository.save(user);
     }
 
