@@ -17,6 +17,7 @@ import com.regisx001.blog.domain.entities.User;
 public interface UserMapper {
 
     @Mapping(target = "roles", source = "roles", qualifiedByName = "mapRolesToNames")
+    @Mapping(target = "avatar", source = "avatar", qualifiedByName = "avatarNameToUri")
     UserDto toDto(User user);
 
     User toEntity(RegisterUserRequest registerUserRequest);
@@ -28,6 +29,14 @@ public interface UserMapper {
         return roles.stream()
                 .map(role -> role.getName().name()) // assuming Role has a getName()
                 .collect(Collectors.toSet());
+    }
+
+    @Named("avatarNameToUri")
+    default String avatarNameToUri(String avatar) {
+        if (avatar == null || avatar.isBlank()) {
+            return null;
+        }
+        return "/uploads/avatars/" + avatar;
     }
 
 }
