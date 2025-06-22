@@ -61,14 +61,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User authenticate(LoginUserRequest loginUserRequest) {
-        User user = userRepository.findByEmail(loginUserRequest.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
+        // if (loginUserRequest.getEmail() == null ||
+        // loginUserRequest.getEmail().trim().isEmpty()) {
+
+        // if (loginUserRequest.getUsername() == null ||
+        // loginUserRequest.getUsername().trim().isEmpty()) {
+        // throw new IllegalArgumentException("You need to login with either the
+        // username or email");
+        // }
+        // }
+
+        Optional<User> optionalUser;
+
+        if (loginUserRequest.getEmail() != null) {
+            optionalUser = userRepository.findByEmail(loginUserRequest.getEmail());
+        } else if (loginUserRequest.getUsername() != null) {
+            optionalUser = userRepository.findByUsername(loginUserRequest.getUsername());
+        } else {
+            throw new IllegalArgumentException("Email or username must be provided.");
+        }
+
+        User user = optionalUser.orElseThrow(() -> new RuntimeException("Account Not found"));
+
         if (!user.isEnabled()) {
             throw new IllegalStateException("Account not verified");
         }
-
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), loginUserRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(user.getUsername(),
+                        loginUserRequest.getPassword()));
         return user;
     }
 
