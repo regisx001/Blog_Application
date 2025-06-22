@@ -1,6 +1,8 @@
 package com.regisx001.blog.services;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.entities.User;
+
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +15,6 @@ public interface UserService {
 
     public void upgradeUserAdmin(UUID userid, Set<String> rolesName);
 
-    UserDto uploadAvatar(UUID userId, MultipartFile file);
+    User uploadAvatar(UUID userId, MultipartFile file);
 
 }

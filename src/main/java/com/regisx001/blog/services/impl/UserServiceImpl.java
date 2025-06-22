@@ -54,11 +54,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDto uploadAvatar(UUID userId, MultipartFile file) {
+    public User uploadAvatar(UUID userId, MultipartFile file) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         String avatarFileName = storageService.store(file);
         user.setAvatar(avatarFileName);
-        return userMapper.toDto(userRepository.save(user));
+        return userRepository.save(user);
     }
 
 }

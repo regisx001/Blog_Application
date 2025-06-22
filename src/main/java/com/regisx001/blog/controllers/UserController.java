@@ -63,8 +63,8 @@ public class UserController {
 
     @PostMapping(path = "/{userId}/avatar")
     public ResponseEntity<?> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatarFile) {
-        UserDto updatedUser = userService.uploadAvatar(userId, avatarFile);
-        return ResponseEntity.ok(updatedUser);
+        User updatedUser = userService.uploadAvatar(userId, avatarFile);
+        return ResponseEntity.ok(userMapper.toDto(updatedUser));
     }
 
 }
