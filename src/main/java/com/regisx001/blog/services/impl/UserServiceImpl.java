@@ -13,11 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.regisx001.blog.repositories.RoleRepository;
 import com.regisx001.blog.repositories.UserRepository;
+import com.regisx001.blog.services.StorageService;
 import com.regisx001.blog.services.UserService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final StorageService storageService;
     private final UserMapper userMapper;
 
     @Override
@@ -46,6 +50,15 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(roles);
         userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public UserDto uploadAvatar(UUID userId, MultipartFile file) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        String avatarFileName = storageService.store(file);
+        user.setAvatar(avatarFileName);
+        return userMapper.toDto(userRepository.save(user));
     }
 
 }
