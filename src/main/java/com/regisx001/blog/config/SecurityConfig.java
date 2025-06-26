@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -47,7 +46,8 @@ public class SecurityConfig {
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                                .exceptionHandling(exceptions -> exceptions.accessDeniedHandler(accessDeniedHandler()))
+                                // .exceptionHandling(exceptions ->
+                                // exceptions.accessDeniedHandler(accessDeniedHandler()))
 
                                 .authenticationProvider(authenticationProvider)
 
@@ -57,10 +57,10 @@ public class SecurityConfig {
 
         }
 
-        @Bean
-        public AccessDeniedHandler accessDeniedHandler() {
-                return new CustomAcessDeniedHandler();
-        }
+        // @Bean
+        // public AccessDeniedHandler accessDeniedHandler() {
+        // return new CustomAcessDeniedHandler();
+        // }
 
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
