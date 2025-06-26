@@ -37,30 +37,24 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @GetMapping("/me")
-    public ResponseEntity<UserDto> authenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(userMapper.toDto(currentUser));
-    }
+    // @PreAuthorize("hasRole('ADMIN')")
+    // @GetMapping
+    // public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable) {
+    // Page<UserDto> users = userService.getAllUsers(pageable);
+    // return ResponseEntity.ok(users);
+    // }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
-    public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable) {
-        Page<UserDto> users = userService.getAllUsers(pageable);
-        return ResponseEntity.ok(users);
-    }
+    // @PreAuthorize("hasRole('ADMIN')")
+    // @PostMapping(path = "/set-admin")
+    // public ResponseEntity<SuccessResponse> setUserToAdmin(
+    // @RequestBody UpdateUserRoleRequest updateUserRoleRequest) {
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(path = "/set-admin")
-    public ResponseEntity<SuccessResponse> setUserToAdmin(
-            @RequestBody UpdateUserRoleRequest updateUserRoleRequest) {
-
-        userService.upgradeUserAdmin(updateUserRoleRequest.getUserId(), updateUserRoleRequest.getRoleNames());
-        SuccessResponse response = SuccessResponse.builder().statusCode(200)
-                .message("User upgraded to admin successfully").build();
-        return new ResponseEntity<SuccessResponse>(response, null, 200);
-    }
+    // userService.upgradeUserAdmin(updateUserRoleRequest.getUserId(),
+    // updateUserRoleRequest.getRoleNames());
+    // SuccessResponse response = SuccessResponse.builder().statusCode(200)
+    // .message("User upgraded to admin successfully").build();
+    // return new ResponseEntity<SuccessResponse>(response, null, 200);
+    // }
 
     @PostMapping(path = "/{userId}/avatar")
     public ResponseEntity<?> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatarFile) {
