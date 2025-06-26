@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping(path = "api/v1/users")
 @RequiredArgsConstructor
-@EnableMethodSecurity
 public class UserController {
 
     private final UserService userService;
