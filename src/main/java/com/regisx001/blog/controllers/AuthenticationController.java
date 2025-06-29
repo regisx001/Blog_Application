@@ -75,7 +75,7 @@ public class AuthenticationController {
                     .message("Account verified successfully").build();
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("Account Already Verified");
         }
     }
 
