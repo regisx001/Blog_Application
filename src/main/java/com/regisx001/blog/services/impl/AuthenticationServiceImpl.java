@@ -83,9 +83,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = optionalUser.orElseThrow(() -> new RuntimeException("Account Not found"));
 
-        if (!user.isEnabled()) {
-            throw new IllegalStateException("Account not verified");
-        }
+        // if (!user.isEnabled()) {
+        // throw new IllegalStateException("Account not verified");
+        // }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(),
                         loginUserRequest.getPassword()));

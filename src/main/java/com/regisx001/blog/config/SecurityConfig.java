@@ -16,6 +16,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.regisx001.blog.filters.AccountVerificationFilter;
 import com.regisx001.blog.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
         private final AuthenticationProvider authenticationProvider;
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final AccountVerificationFilter accountVerificationFilter;
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,7 +53,9 @@ public class SecurityConfig {
 
                                 .authenticationProvider(authenticationProvider)
 
-                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                                .addFilterBefore(jwtAuthenticationFilter,
+                                                UsernamePasswordAuthenticationFilter.class)
+                                .addFilterAfter(accountVerificationFilter, JwtAuthenticationFilter.class);
 
                 return http.build();
 

@@ -60,12 +60,9 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
-
     private String avatar;
 
     private String coverImage;
-
-
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -119,6 +116,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
+        return true;
+    }
+
+    // Add a custom method for your business logic
+    public boolean isVerified() {
+        return this.enabled; // Use actual field value for verification
+    }
+
+    // Setter for your actual enabled field
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    // Getter for your actual enabled field
+    public boolean getEnabled() {
         return this.enabled;
     }
 }
