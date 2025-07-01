@@ -15,12 +15,14 @@ import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
 import com.regisx001.blog.domain.dto.requests.RegisterUserRequest;
 import com.regisx001.blog.domain.dto.requests.TokenRefreshRequest;
+import com.regisx001.blog.domain.dto.requests.VerifyTokenRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.dto.responses.LoginResponse;
 import com.regisx001.blog.domain.dto.responses.SuccessResponse;
 import com.regisx001.blog.domain.dto.responses.TokenResponse;
 import com.regisx001.blog.domain.entities.RefreshToken;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.exceptions.ExpiredAccessTokenException;
 import com.regisx001.blog.mappers.UserMapper;
 import com.regisx001.blog.services.AuthenticationService;
 import com.regisx001.blog.services.JwtService;
@@ -67,7 +69,21 @@ public class AuthenticationController {
         return ResponseEntity.ok(userMapper.toDto(currentUser));
     }
 
-    @PostMapping("/verify")
+    @PostMapping(path = "/verify-token")
+    public ResponseEntity<SuccessResponse> verifyToken(@RequestBody VerifyTokenRequest verifyTokenRequest) {
+        boolean isTokenExpired = jwtService.isTokenExpired(verifyTokenRequest.getToken());
+        if (isTokenExpired) {
+            throw new ExpiredAccessTokenException("Token is Expired");
+        }
+
+        SuccessResponse response = SuccessResponse.builder()
+                .statusCode(200)
+                .message("Token is valid")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/verify-account")
     public ResponseEntity<?> verifyUser(@RequestBody VerifyUserRequest verifyUserRequest) {
         try {
             authenticationService.verifyUser(verifyUserRequest);

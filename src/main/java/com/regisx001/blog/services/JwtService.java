@@ -11,7 +11,10 @@ public interface JwtService {
 
     public String generateToken(User user);
 
+    public boolean isTokenExpired(String token);
+
     public boolean isTokenValid(String token, User user);
 
     public long getJwtExpiration();
+
 }

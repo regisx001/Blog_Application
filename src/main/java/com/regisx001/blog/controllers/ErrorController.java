@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.responses.ApiErrorResponse;
+import com.regisx001.blog.exceptions.ExpiredAccessTokenException;
 import com.regisx001.blog.exceptions.ExpiredRefreshTokenException;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -105,5 +106,15 @@ public class ErrorController {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ExpiredAccessTokenException.class)
+    public ResponseEntity<ApiErrorResponse> handleExpiredAccessTokenException(ExpiredAccessTokenException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }
