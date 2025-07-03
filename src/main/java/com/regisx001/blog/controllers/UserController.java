@@ -6,9 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
-import com.regisx001.blog.domain.dto.requests.UpdateUserRoleRequest;
-import com.regisx001.blog.domain.dto.responses.SuccessResponse;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.mappers.UserMapper;
 import com.regisx001.blog.services.UserService;
