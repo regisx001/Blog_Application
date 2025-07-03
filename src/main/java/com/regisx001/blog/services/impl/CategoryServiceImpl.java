@@ -2,10 +2,14 @@ package com.regisx001.blog.services.impl;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.regisx001.blog.domain.dto.CategoryDto;
 import com.regisx001.blog.domain.dto.requests.CreateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;
+import com.regisx001.blog.mappers.CategoryMapper;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.services.CategoryService;
 
@@ -16,6 +20,12 @@ import lombok.RequiredArgsConstructor;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+
+    @Override
+    public Page<CategoryDto> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
+    }
 
     @Override
     public Category createCategory(CreateCategoryRequest categoryRequest) {

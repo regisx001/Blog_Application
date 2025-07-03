@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -40,8 +41,10 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers("/api/v1/auth/**", "/h2-console/**",
                                                                 "/uploads/avatars/**")
+
                                                 .permitAll()
-                                                // .requestMatchers("/api/v1/users").hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.GET, "/api/v1/categories")
+                                                .permitAll()
                                                 // .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")q
 
                                                 .anyRequest().authenticated())
