@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.CategoryDto;
 import com.regisx001.blog.domain.dto.requests.CreateCategoryRequest;
+import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.mappers.CategoryMapper;
 import com.regisx001.blog.repositories.CategoryRepository;
@@ -36,20 +37,27 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCategoryById'");
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + id));
+
+        return existingCategory;
     }
 
     @Override
-    public Category updateCategory(UUID id, Category category) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCategory'");
+    public Category updateCategory(UUID id, UpdateCategoryRequest category) {
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + id));
+        existingCategory.setTitle(category.getTitle());
+        existingCategory.setDescription(category.getDescription());
+        existingCategory.setImage(category.getImage());
+        return categoryRepository.save(existingCategory);
     }
 
     @Override
     public void deleteCategory(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCategory'");
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + id));
+        categoryRepository.delete(existingCategory);
     }
 
 }

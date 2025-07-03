@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.regisx001.blog.domain.dto.CategoryDto;
 import com.regisx001.blog.domain.dto.requests.CreateCategoryRequest;
+import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;;
 
 public interface CategoryService {
@@ -16,7 +17,7 @@ public interface CategoryService {
 
     Category getCategoryById(UUID id);
 
-    Category updateCategory(UUID id, Category category);
+    Category updateCategory(UUID id, UpdateCategoryRequest category);
 
     void deleteCategory(UUID id);
 }
