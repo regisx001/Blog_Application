@@ -41,13 +41,17 @@ public class GlobalExceptionHandler {
         List<ApiErrorResponse.FieldError> fieldErrors = new ArrayList<>();
 
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            fieldErrors.add(ApiErrorResponse.FieldError.builder()
-                    .field(fieldName)
-                    .message(errorMessage)
-                    .build());
-            log.error("Field: {} - Error: {}", fieldName, errorMessage);
+            if (error instanceof FieldError) {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                fieldErrors.add(ApiErrorResponse.FieldError.builder()
+                        .field(fieldName)
+                        .message(errorMessage)
+                        .build());
+                log.error("Field: {} - Error: {}", fieldName, errorMessage);
+            } else {
+                log.warn("Non-field error encountered: {}", error.getDefaultMessage());
+            }
         });
 
         ApiErrorResponse errorResponse = ApiErrorResponse.builder()
