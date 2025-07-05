@@ -45,7 +45,7 @@ public class StorageServiceImpl implements StorageService {
                 throw new RuntimeException("Failed to store empty file");
             }
 
-            Path destinationPath = this.rootLocation.resolve(Paths.get(filename));
+            Path destinationPath = this.rootLocation.resolve(Paths.get(filename).getFileName().toString());
             if (!destinationPath.normalize().startsWith(rootLocation)) {
                 throw new RuntimeException("Cannot store file outside root directory");
             }
