@@ -21,15 +21,15 @@ import lombok.RequiredArgsConstructor;
 public class StorageServiceImpl implements StorageService {
 
     private final FileStorageConfig fileStorageConfig;
-    private Path avatarsLocation;
+    private Path rootLocation;
 
     @PostConstruct
     void init() {
-        this.avatarsLocation = Paths.get(fileStorageConfig.getUploadDir(), "avatars");
+        this.rootLocation = Paths.get(fileStorageConfig.getUploadDir());
         try {
-            Files.createDirectories(avatarsLocation);
+            Files.createDirectories(rootLocation);
         } catch (IOException e) {
-            throw new RuntimeException("Could not initialize avatars storage", e);
+            throw new RuntimeException("Could not initialize storage", e);
         }
     }
 
@@ -45,9 +45,9 @@ public class StorageServiceImpl implements StorageService {
                 throw new RuntimeException("Failed to store empty file");
             }
 
-            Path destinationPath = this.avatarsLocation.resolve(Paths.get(filename));
-            if (!destinationPath.normalize().startsWith(avatarsLocation)) {
-                throw new RuntimeException("Cannot store file outside avatars directory");
+            Path destinationPath = this.rootLocation.resolve(Paths.get(filename));
+            if (!destinationPath.normalize().startsWith(rootLocation)) {
+                throw new RuntimeException("Cannot store file outside root directory");
             }
             file.transferTo(destinationPath);
             return filename;
