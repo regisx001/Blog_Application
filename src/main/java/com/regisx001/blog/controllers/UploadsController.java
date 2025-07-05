@@ -10,12 +10,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/uploads/avatars")
-public class AvatarController {
+@RequestMapping("/uploads")
+public class UploadsController {
 
     @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws Exception {
-        Path file = Paths.get("uploads/avatars").resolve(filename);
+        Path file = Paths.get("uploads").resolve(filename);
         Resource resource = new UrlResource(file.toUri());
         if (!resource.exists() || !resource.isReadable()) {
             throw new RuntimeException("Could not read file: " + filename);
