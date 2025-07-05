@@ -53,7 +53,7 @@ public interface UserMapper {
         if (avatar == null || avatar.isBlank()) {
             return null;
         }
-        return "/uploads/avatars/" + avatar;
+        return "/uploads/" + avatar;
     }
 
 }
