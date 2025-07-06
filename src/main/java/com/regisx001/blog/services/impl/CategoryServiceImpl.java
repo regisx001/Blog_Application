@@ -86,4 +86,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .trim();
     }
 
+    @Override
+    public Category findByTitle(String title) {
+        return categoryRepository.findByTitle(title).orElseThrow(() -> new RuntimeException("Category not found"));
+    }
+
 }

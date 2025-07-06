@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserService {
     public Page<UserDto> getAllUsers(Pageable pageable);
 
+    User findByUsername(String username);
+
     public void upgradeUserAdmin(UUID userid, Set<String> rolesName);
 
     User uploadAvatar(UUID userId, MultipartFile file);
