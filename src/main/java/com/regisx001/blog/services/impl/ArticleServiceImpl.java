@@ -62,20 +62,20 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article getArticleById(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getArticleById'");
+        Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("Article not found"));
+        return article;
     }
 
     @Override
-    public Article updateArticle(UUID id, UpdateArticleRequest Article) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateArticle'");
+    public Article updateArticle(UUID id, UpdateArticleRequest articleRequest) {
+        // TODO
+        return null;
     }
 
     @Override
     public void deleteArticle(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteArticle'");
+        Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("Article not found"));
+        articleRepository.delete(article);
     }
 
 }
