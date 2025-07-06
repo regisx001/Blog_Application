@@ -40,7 +40,7 @@ public class SecurityConfig {
                                                 .disable())
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers("/api/v1/auth/**", "/h2-console/**",
-                                                                "/uploads/**")
+                                                                "/uploads/**", "/actuator/**")
 
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/categories")

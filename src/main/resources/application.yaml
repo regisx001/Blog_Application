@@ -42,3 +42,9 @@ logging:
 file:
   upload-dir:
     uploads: /uploads
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,httptrace,prometheus
