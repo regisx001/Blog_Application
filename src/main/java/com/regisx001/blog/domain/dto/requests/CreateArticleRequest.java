@@ -1,6 +1,7 @@
 package com.regisx001.blog.domain.dto.requests;
 
-import com.regisx001.blog.domain.entities.Category;
+import java.util.List;
+
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
 
 import lombok.Data;
@@ -13,4 +14,5 @@ public class CreateArticleRequest {
     private ArticleStatus status;
     private Boolean isPublished;
     private String category;
+    private List<String> tags;
 }
