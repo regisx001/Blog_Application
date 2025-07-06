@@ -43,7 +43,8 @@ public class SecurityConfig {
                                                                 "/uploads/**", "/actuator/**")
 
                                                 .permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/v1/categories")
+                                                .requestMatchers(HttpMethod.GET, "/api/v1/categories",
+                                                                "/api/v1/articles")
                                                 .permitAll()
                                                 // .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")q
 

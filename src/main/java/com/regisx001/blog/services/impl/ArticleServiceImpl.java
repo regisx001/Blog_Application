@@ -15,12 +15,12 @@ import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.domain.entities.Tag;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.repositories.TagRepository;
 import com.regisx001.blog.services.ArticleService;
 
-import io.micrometer.core.instrument.Tags;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,13 +28,13 @@ import lombok.RequiredArgsConstructor;
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final ArticleMapper articleMapper;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
 
     @Override
     public Page<ArticleDto> getAllArticles(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllArticles'");
+        return articleRepository.findAll(pageable).map(articleMapper::toDto);
     }
 
     @Override

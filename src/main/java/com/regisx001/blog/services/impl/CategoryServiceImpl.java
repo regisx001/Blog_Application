@@ -79,12 +79,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     // TODO: FUTURE USE
-    private String generateSlug(String title) {
-        return title.toLowerCase()
-                .replaceAll("[^a-z0-9\\s]", "")
-                .replaceAll("\\s+", "-")
-                .trim();
-    }
+    // private String generateSlug(String title) {
+    // return title.toLowerCase()
+    // .replaceAll("[^a-z0-9\\s]", "")
+    // .replaceAll("\\s+", "-")
+    // .trim();
+    // }
 
     @Override
     public Category findByTitle(String title) {
