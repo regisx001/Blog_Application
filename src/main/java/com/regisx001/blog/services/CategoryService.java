@@ -11,7 +11,7 @@ import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;;
 
 public interface CategoryService {
-    public Page<CategoryDto> getAllCategories(Pageable pageable);
+    public Page<CategoryDto.Basic> getAllCategories(Pageable pageable);
 
     Category createCategory(CreateCategoryRequest categoryRequests);
 
