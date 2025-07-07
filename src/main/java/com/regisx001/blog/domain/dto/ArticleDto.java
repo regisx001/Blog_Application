@@ -24,6 +24,6 @@ public class ArticleDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserDto user;
-    private CategoryDto category;
+    private CategoryDto.Basic category;
     private List<TagDto> tags;
 }
