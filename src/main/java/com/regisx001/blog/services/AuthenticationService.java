@@ -6,7 +6,7 @@ import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.entities.User;
 
 public interface AuthenticationService {
-    public User register(User user);
+    public User register(UserDto.RegisterRequest registerRequest);
 
     public User authenticate(UserDto.LoginRequest loginUserRequest);
 

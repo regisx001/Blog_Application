@@ -60,7 +60,7 @@ public abstract class UserMapper {
     @Named("avatarNameToFullUri")
     protected String avatarNameToFullUri(String avatar) {
         if (avatar == null || avatar.isBlank()) {
-            return baseUrl + "/uploads/avatars/default-avatar.png"; // default avatar
+            return "https://gravatar.com/avatar/4c3b0ab99ac413643387fc940a440210?s=400&d=retro&r=x"; // default avatar
         }
 
         // If it's already a full URL, return as is

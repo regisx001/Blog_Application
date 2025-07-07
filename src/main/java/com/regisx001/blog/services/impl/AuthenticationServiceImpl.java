@@ -37,18 +37,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RoleRepository roleRepository;
 
     @Override
-    public User register(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("An account with this email : " + user.getEmail() + " already exist.");
-        }
-
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+    public User register(UserDto.RegisterRequest registerRequest) {
+        if (userRepository.findByEmail(registerRequest.email()).isPresent()) {
             throw new IllegalArgumentException(
-                    "An account with this username : " + user.getUsername() + " already exist.");
+                    "An account with this email : " + registerRequest.email() + " already exist.");
         }
 
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashedPassword);
+        if (userRepository.findByUsername(registerRequest.username()).isPresent()) {
+            throw new IllegalArgumentException(
+                    "An account with this username : " + registerRequest.username() + " already exist.");
+        }
+
+        String hashedPassword = passwordEncoder.encode(registerRequest.password());
+
+        User user = User.builder()
+                .username(registerRequest.username())
+                .email(registerRequest.email())
+                .password(hashedPassword).build();
 
         Role userRole = roleRepository.findByName(RoleType.ROLE_USER);
         user.setRoles(Set.of(userRole));

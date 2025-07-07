@@ -47,7 +47,7 @@ public class AuthenticationController {
     @PostMapping(path = "/register")
     public ResponseEntity<UserDto.Detailed> registerUser(
             @RequestBody UserDto.RegisterRequest registerUserRequest) {
-        User savedUser = authenticationService.register(userMapper.toEntity(registerUserRequest));
+        User savedUser = authenticationService.register(registerUserRequest);
         authenticationService.sendVerificationEmail(savedUser);
         return new ResponseEntity<>(userMapper.toDetailedDto(savedUser), HttpStatus.CREATED);
     }
