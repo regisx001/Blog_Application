@@ -1,12 +1,12 @@
 package com.regisx001.blog.services.impl;
 
 import com.regisx001.blog.domain.dto.UserDto;
-import com.regisx001.blog.domain.dto.UserDtoRef;
+import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.Role;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.mappers.UserMapper;
-import com.regisx001.blog.mappers.UserMapperRef;
+import com.regisx001.blog.mappers.UserMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,11 +36,10 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final StorageService storageService;
     private final UserMapper userMapper;
-    private final UserMapperRef userMapperRef;
 
     @Override
-    public Page<UserDtoRef.Detailed> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable).map(userMapperRef::toDetailedDto);
+    public Page<UserDto.Detailed> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(userMapper::toDetailedDto);
     }
 
     @Override

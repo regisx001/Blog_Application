@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.UserDto;
-import com.regisx001.blog.domain.dto.UserDtoRef;
+import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
 import com.regisx001.blog.domain.dto.requests.RegisterUserRequest;
 import com.regisx001.blog.domain.dto.requests.TokenRefreshRequest;
@@ -25,7 +25,7 @@ import com.regisx001.blog.domain.entities.RefreshToken;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.exceptions.ExpiredAccessTokenException;
 import com.regisx001.blog.mappers.UserMapper;
-import com.regisx001.blog.mappers.UserMapperRef;
+import com.regisx001.blog.mappers.UserMapper;
 import com.regisx001.blog.services.AuthenticationService;
 import com.regisx001.blog.services.JwtService;
 import com.regisx001.blog.services.RefreshTokenService;
@@ -43,18 +43,17 @@ public class AuthenticationController {
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationService authenticationService;
     private final UserMapper userMapper;
-    private final UserMapperRef userMapperRef;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<UserDtoRef.Detailed> registerUser(
-            @RequestBody UserDtoRef.RegisterRequest registerUserRequest) {
-        User savedUser = authenticationService.register(userMapperRef.toEntity(registerUserRequest));
+    public ResponseEntity<UserDto.Detailed> registerUser(
+            @RequestBody UserDto.RegisterRequest registerUserRequest) {
+        User savedUser = authenticationService.register(userMapper.toEntity(registerUserRequest));
         authenticationService.sendVerificationEmail(savedUser);
-        return new ResponseEntity<>(userMapperRef.toDetailedDto(savedUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(userMapper.toDetailedDto(savedUser), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody UserDtoRef.LoginRequest loginUserRequest) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody UserDto.LoginRequest loginUserRequest) {
         User authenticateUser = authenticationService.authenticate(loginUserRequest);
         String jwtToken = jwtService.generateToken(authenticateUser);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(authenticateUser.getId());
@@ -67,10 +66,10 @@ public class AuthenticationController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDtoRef.Detailed> authenticatedUser() {
+    public ResponseEntity<UserDto.Detailed> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(userMapperRef.toDetailedDto(currentUser));
+        return ResponseEntity.ok(userMapper.toDetailedDto(currentUser));
     }
 
     @PostMapping(path = "/verify-token")

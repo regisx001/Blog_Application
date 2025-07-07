@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.regisx001.blog.domain.dto.UserDto;
-import com.regisx001.blog.domain.dto.UserDtoRef;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.mappers.UserMapper;
-import com.regisx001.blog.mappers.UserMapperRef;
 import com.regisx001.blog.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,12 +31,11 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-    private final UserMapperRef userMapperRef;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<UserDtoRef.Detailed>> getAllUsers(Pageable pageable) {
-        Page<UserDtoRef.Detailed> users = userService.getAllUsers(pageable);
+    public ResponseEntity<Page<UserDto.Detailed>> getAllUsers(Pageable pageable) {
+        Page<UserDto.Detailed> users = userService.getAllUsers(pageable);
         return ResponseEntity.ok(users);
     }
 
@@ -57,7 +54,7 @@ public class UserController {
     @PostMapping(path = "/{userId}/avatar")
     public ResponseEntity<?> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatarFile) {
         User updatedUser = userService.uploadAvatar(userId, avatarFile);
-        return ResponseEntity.ok(userMapperRef.toDetailedDto(updatedUser));
+        return ResponseEntity.ok(userMapper.toDetailedDto(updatedUser));
     }
 
     @PutMapping(path = "/{userId}")
@@ -65,7 +62,7 @@ public class UserController {
 
         User updatedUser = userService.updateUser(userId, updateUserRequest);
 
-        return ResponseEntity.ok(userMapperRef.toDetailedDto(updatedUser));
+        return ResponseEntity.ok(userMapper.toDetailedDto(updatedUser));
     }
 
 }

@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.regisx001.blog.domain.dto.UserDtoRef;
+import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.entities.Role;
@@ -61,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User authenticate(UserDtoRef.LoginRequest loginUserRequest) {
+    public User authenticate(UserDto.LoginRequest loginUserRequest) {
         // if (loginUserRequest.getEmail() == null ||
         // loginUserRequest.getEmail().trim().isEmpty()) {
 
