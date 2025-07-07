@@ -1,6 +1,7 @@
 package com.regisx001.blog.services;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.dto.UserDtoRef;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.User;
 
@@ -12,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
-    public Page<UserDto> getAllUsers(Pageable pageable);
+    public Page<UserDtoRef.Detailed> getAllUsers(Pageable pageable);
 
     User findByUsername(String username);
 

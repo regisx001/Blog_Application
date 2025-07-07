@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.regisx001.blog.domain.dto.UserDtoRef;
 import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.entities.Role;
@@ -60,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User authenticate(LoginUserRequest loginUserRequest) {
+    public User authenticate(UserDtoRef.LoginRequest loginUserRequest) {
         // if (loginUserRequest.getEmail() == null ||
         // loginUserRequest.getEmail().trim().isEmpty()) {
 
@@ -73,10 +74,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         Optional<User> optionalUser;
 
-        if (loginUserRequest.getEmail() != null) {
-            optionalUser = userRepository.findByEmail(loginUserRequest.getEmail());
-        } else if (loginUserRequest.getUsername() != null) {
-            optionalUser = userRepository.findByUsername(loginUserRequest.getUsername());
+        if (loginUserRequest.email() != null) {
+            optionalUser = userRepository.findByEmail(loginUserRequest.email());
+        } else if (loginUserRequest.username() != null) {
+            optionalUser = userRepository.findByUsername(loginUserRequest.username());
         } else {
             throw new IllegalArgumentException("Email or username must be provided.");
         }
@@ -89,7 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(),
-                        loginUserRequest.getPassword()));
+                        loginUserRequest.password()));
         return user;
     }
 

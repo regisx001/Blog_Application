@@ -7,10 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.CategoryDto;
+import com.regisx001.blog.domain.dto.CategoryDtoRef;
 import com.regisx001.blog.domain.dto.requests.CreateCategoryRequest;
 import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.mappers.CategoryMapper;
+import com.regisx001.blog.mappers.CategoryMapperRef;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.services.CategoryService;
 import com.regisx001.blog.services.StorageService;
@@ -24,27 +26,28 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final StorageService storageService;
     private final CategoryMapper categoryMapper;
+    private final CategoryMapperRef categoryMapperRef;
 
     @Override
-    public Page<CategoryDto> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
+    public Page<CategoryDtoRef.Detailed> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapperRef::toDetailedDto);
     }
 
     @Override
-    public Category createCategory(CreateCategoryRequest categoryRequest) {
+    public Category createCategory(CategoryDtoRef.CreateWithImageRequest categoryRequest) {
         String imagePath = null;
 
-        if (categoryRequest.hasImage()) {
+        if (categoryRequest.image() != null) {
             try {
-                imagePath = storageService.store(categoryRequest.getImage());
+                imagePath = storageService.store(categoryRequest.image());
             } catch (Exception e) {
                 throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
             }
         }
 
         Category category = Category.builder()
-                .title(categoryRequest.getTitle())
-                .description(categoryRequest.getDescription())
+                .title(categoryRequest.title())
+                .description(categoryRequest.description())
                 .image(imagePath) // This will be null if no image uploaded
                 .build();
 

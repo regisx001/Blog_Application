@@ -4,10 +4,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.CategoryDto;
+import com.regisx001.blog.domain.dto.CategoryDtoRef;
 import com.regisx001.blog.domain.dto.requests.CreateCategoryRequest;
 import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.mappers.CategoryMapper;
+import com.regisx001.blog.mappers.CategoryMapperRef;
 import com.regisx001.blog.services.CategoryService;
 
 import jakarta.validation.Valid;
@@ -35,17 +37,18 @@ public class CategoryController {
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
+    private final CategoryMapperRef categoryMapperRef;
 
     @GetMapping
-    public ResponseEntity<Page<CategoryDto>> getAllCategories(Pageable pageable) {
-        Page<CategoryDto> categories = categoryService.getAllCategories(pageable);
+    public ResponseEntity<Page<CategoryDtoRef.Detailed>> getAllCategories(Pageable pageable) {
+        Page<CategoryDtoRef.Detailed> categories = categoryService.getAllCategories(pageable);
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable UUID id) {
+    public ResponseEntity<CategoryDtoRef.Detailed> getCategoryById(@PathVariable UUID id) {
         Category category = categoryService.getCategoryById(id);
-        return ResponseEntity.ok(categoryMapper.toDto(category));
+        return ResponseEntity.ok(categoryMapperRef.toDetailedDto(category));
     }
 
     // @PostMapping
@@ -57,17 +60,19 @@ public class CategoryController {
     // }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CategoryDto> createCategory(@Valid @ModelAttribute CreateCategoryRequest categoryRequest) {
+    public ResponseEntity<CategoryDtoRef.Detailed> createCategory(
+            @Valid @ModelAttribute CategoryDtoRef.CreateWithImageRequest categoryRequest) {
         Category category = categoryService.createCategory(categoryRequest);
-        return new ResponseEntity<>(categoryMapper.toDto(category), HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryMapperRef.toDetailedDto(category), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable UUID id,
-            @Valid @RequestBody UpdateCategoryRequest categoryRequest) {
-        Category category = categoryService.updateCategory(id, categoryRequest);
-        return ResponseEntity.ok(categoryMapper.toDto(category));
-    }
+    // TODO: IMPLEMENT LATER
+    // @PutMapping("/{id}")
+    // public ResponseEntity<CategoryDto> updateCategory(@PathVariable UUID id,
+    // @Valid @RequestBody UpdateCategoryRequest categoryRequest) {
+    // Category category = categoryService.updateCategory(id, categoryRequest);
+    // return ResponseEntity.ok(categoryMapper.toDto(category));
+    // }
 
     @DeleteMapping("/{id}") // Fixed: was "/id", now "/{id}"
     public ResponseEntity<?> deleteCategory(@PathVariable UUID id) {

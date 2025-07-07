@@ -24,12 +24,12 @@ public class UserAdminController {
 
     private final UserService userService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
-    public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable) {
-        Page<UserDto> users = userService.getAllUsers(pageable);
-        return ResponseEntity.ok(users);
-    }
+    // @PreAuthorize("hasRole('ADMIN')")
+    // @GetMapping
+    // public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable) {
+    // Page<UserDto> users = userService.getAllUsers(pageable);
+    // return ResponseEntity.ok(users);
+    // }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path = "/set-admin")
