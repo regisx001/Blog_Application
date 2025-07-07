@@ -6,14 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.regisx001.blog.domain.dto.CategoryDto;
-import com.regisx001.blog.domain.dto.requests.CreateCategoryRequest;
 import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;;
 
 public interface CategoryService {
-    public Page<CategoryDto> getAllCategories(Pageable pageable);
+    public Page<CategoryDto.Detailed> getAllCategories(Pageable pageable);
 
-    Category createCategory(CreateCategoryRequest categoryRequests);
+    Category createCategory(CategoryDto.CreateRequest categoryRequests);
 
     Category getCategoryById(UUID id);
 
