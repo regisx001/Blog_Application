@@ -1,29 +1,22 @@
 package com.regisx001.blog.controllers;
 
-import java.util.UUID;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
-import com.regisx001.blog.domain.dto.requests.CreateArticleRequest;
-import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.User;
-import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.services.ArticleService;
-import com.regisx001.blog.services.UserService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/api/v1/articles")
@@ -31,34 +24,17 @@ import lombok.RequiredArgsConstructor;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final UserService userService;
-    private final ArticleMapper articleMapper;
-    // private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<Page<ArticleDto>> getAllArticles(Pageable pageable) {
-        return ResponseEntity.ok(articleService.getAllArticles(pageable));
+    public ResponseEntity<Page<ArticleDto.Basic>> getAllArticles(Pageable pageable) {
+        return ResponseEntity.ok(articleService.getAllBasicArticles(pageable));
     }
 
     @PostMapping
-    public ResponseEntity<ArticleDto> createArticle(@RequestBody CreateArticleRequest createArticleRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        User currentUser = userService.findByUsername(username);
-
-        Article article = articleService.createArticle(createArticleRequest, currentUser);
-
-        return ResponseEntity.ok(articleMapper.toDto(article));
+    public ResponseEntity<ArticleDto.Detailed> createArticle(@RequestBody ArticleDto.CreateRequest createRequest,
+            @AuthenticationPrincipal User userDetails) {
+        return new ResponseEntity<>(articleService.createArticle(createRequest, userDetails.getId()),
+                HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<ArticleDto> getArticle(@PathVariable UUID id) {
-        return ResponseEntity.ok(articleMapper.toDto(articleService.getArticleById(id)));
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> deleteArticle(@PathVariable UUID id) {
-        articleService.deleteArticle(id);
-        return ResponseEntity.noContent().build();
-    }
 }

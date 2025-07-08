@@ -15,17 +15,39 @@ public abstract class CategoryMapper {
     @Value("${app.base-url:http://localhost:8080}")
     protected String baseUrl;
 
-    @Mapping(target = "image", source = "image", qualifiedByName = "imageNameToFullUri")
-    public abstract CategoryDto toDto(Category category);
+    // ============= TO DTO MAPPINGS =============
 
-    public abstract Category toEntity(CategoryDto categoryDto);
+    @Mapping(target = "image", source = "image", qualifiedByName = "imageNameToFullUri")
+    public abstract CategoryDto.Basic toBasicDto(Category category);
+
+    @Mapping(target = "image", source = "image", qualifiedByName = "imageNameToFullUri")
+    public abstract CategoryDto.Detailed toDetailedDto(Category category);
+
+    public abstract CategoryDto.Option toOptionDto(Category category);
+
+    // ============= TO ENTITY MAPPINGS =============
+
+    @Mapping(target = "id", ignore = true)
+    // @Mapping(target = "articles", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "image", ignore = true) // handled separately
+    public abstract Category toEntity(CategoryDto.CreateRequest request);
+
+    @Mapping(target = "id", ignore = true)
+    // @Mapping(target = "articles", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "image", ignore = true) // handled separately
+    public abstract Category toEntity(CategoryDto.CreateWithImageRequest request);
+
+    // ============= HELPER METHODS =============
 
     @Named("imageNameToFullUri")
     protected String imageNameToFullUri(String image) {
         if (image == null || image.isBlank()) {
             return null;
         }
-        // Remove leading slash if present to avoid double slashes
         String cleanImage = image.startsWith("/") ? image.substring(1) : image;
         return baseUrl + "/uploads/" + cleanImage;
     }

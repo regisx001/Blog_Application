@@ -16,6 +16,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestLoggingFilter.class);
 
+    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,

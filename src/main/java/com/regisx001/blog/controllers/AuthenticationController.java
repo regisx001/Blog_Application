@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.UserDto;
-import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
-import com.regisx001.blog.domain.dto.requests.RegisterUserRequest;
 import com.regisx001.blog.domain.dto.requests.TokenRefreshRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyTokenRequest;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
@@ -43,14 +41,15 @@ public class AuthenticationController {
     private final UserMapper userMapper;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<UserDto> registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
-        User savedUser = authenticationService.register(userMapper.toEntity(registerUserRequest));
+    public ResponseEntity<UserDto.Detailed> registerUser(
+            @RequestBody UserDto.RegisterRequest registerUserRequest) {
+        User savedUser = authenticationService.register(registerUserRequest);
         authenticationService.sendVerificationEmail(savedUser);
-        return new ResponseEntity<>(userMapper.toDto(savedUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(userMapper.toDetailedDto(savedUser), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginUserRequest loginUserRequest) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody UserDto.LoginRequest loginUserRequest) {
         User authenticateUser = authenticationService.authenticate(loginUserRequest);
         String jwtToken = jwtService.generateToken(authenticateUser);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(authenticateUser.getId());
@@ -63,10 +62,10 @@ public class AuthenticationController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> authenticatedUser() {
+    public ResponseEntity<UserDto.Detailed> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(userMapper.toDto(currentUser));
+        return ResponseEntity.ok(userMapper.toDetailedDto(currentUser));
     }
 
     @PostMapping(path = "/verify-token")

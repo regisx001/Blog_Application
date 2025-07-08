@@ -34,8 +34,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable) {
-        Page<UserDto> users = userService.getAllUsers(pageable);
+    public ResponseEntity<Page<UserDto.Detailed>> getAllUsers(Pageable pageable) {
+        Page<UserDto.Detailed> users = userService.getAllUsers(pageable);
         return ResponseEntity.ok(users);
     }
 
@@ -54,7 +54,7 @@ public class UserController {
     @PostMapping(path = "/{userId}/avatar")
     public ResponseEntity<?> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatarFile) {
         User updatedUser = userService.uploadAvatar(userId, avatarFile);
-        return ResponseEntity.ok(userMapper.toDto(updatedUser));
+        return ResponseEntity.ok(userMapper.toDetailedDto(updatedUser));
     }
 
     @PutMapping(path = "/{userId}")
@@ -62,7 +62,7 @@ public class UserController {
 
         User updatedUser = userService.updateUser(userId, updateUserRequest);
 
-        return ResponseEntity.ok(userMapper.toDto(updatedUser));
+        return ResponseEntity.ok(userMapper.toDetailedDto(updatedUser));
     }
 
 }

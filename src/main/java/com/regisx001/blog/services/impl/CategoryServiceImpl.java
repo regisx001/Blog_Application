@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.CategoryDto;
-import com.regisx001.blog.domain.dto.requests.CreateCategoryRequest;
-import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.mappers.CategoryMapper;
 import com.regisx001.blog.repositories.CategoryRepository;
@@ -26,25 +24,25 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public Page<CategoryDto> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
+    public Page<CategoryDto.Detailed> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDetailedDto);
     }
 
     @Override
-    public Category createCategory(CreateCategoryRequest categoryRequest) {
+    public Category createCategory(CategoryDto.CreateWithImageRequest categoryRequest) {
         String imagePath = null;
 
-        if (categoryRequest.hasImage()) {
+        if (categoryRequest.image() != null) {
             try {
-                imagePath = storageService.store(categoryRequest.getImage());
+                imagePath = storageService.store(categoryRequest.image());
             } catch (Exception e) {
                 throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
             }
         }
 
         Category category = Category.builder()
-                .title(categoryRequest.getTitle())
-                .description(categoryRequest.getDescription())
+                .title(categoryRequest.title())
+                .description(categoryRequest.description())
                 .image(imagePath) // This will be null if no image uploaded
                 .build();
 
@@ -62,12 +60,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(UUID id, UpdateCategoryRequest category) {
+    public Category updateCategory(UUID id, CategoryDto.UpdateRequest category) {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + id));
-        existingCategory.setTitle(category.getTitle());
-        existingCategory.setDescription(category.getDescription());
-        existingCategory.setImage(category.getImage());
+        existingCategory.setTitle(category.title());
+        existingCategory.setDescription(category.description());
+        existingCategory.setImage(category.image());
         return categoryRepository.save(existingCategory);
     }
 

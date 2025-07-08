@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.regisx001.blog.domain.dto.requests.LoginUserRequest;
+import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.VerifyUserRequest;
 import com.regisx001.blog.domain.entities.Role;
 import com.regisx001.blog.domain.entities.RoleType;
@@ -36,18 +36,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RoleRepository roleRepository;
 
     @Override
-    public User register(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("An account with this email : " + user.getEmail() + " already exist.");
-        }
-
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+    public User register(UserDto.RegisterRequest registerRequest) {
+        if (userRepository.findByEmail(registerRequest.email()).isPresent()) {
             throw new IllegalArgumentException(
-                    "An account with this username : " + user.getUsername() + " already exist.");
+                    "An account with this email : " + registerRequest.email() + " already exist.");
         }
 
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashedPassword);
+        if (userRepository.findByUsername(registerRequest.username()).isPresent()) {
+            throw new IllegalArgumentException(
+                    "An account with this username : " + registerRequest.username() + " already exist.");
+        }
+
+        String hashedPassword = passwordEncoder.encode(registerRequest.password());
+
+        User user = User.builder()
+                .username(registerRequest.username())
+                .email(registerRequest.email())
+                .password(hashedPassword).build();
 
         Role userRole = roleRepository.findByName(RoleType.ROLE_USER);
         user.setRoles(Set.of(userRole));
@@ -60,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User authenticate(LoginUserRequest loginUserRequest) {
+    public User authenticate(UserDto.LoginRequest loginUserRequest) {
         // if (loginUserRequest.getEmail() == null ||
         // loginUserRequest.getEmail().trim().isEmpty()) {
 
@@ -73,10 +78,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         Optional<User> optionalUser;
 
-        if (loginUserRequest.getEmail() != null) {
-            optionalUser = userRepository.findByEmail(loginUserRequest.getEmail());
-        } else if (loginUserRequest.getUsername() != null) {
-            optionalUser = userRepository.findByUsername(loginUserRequest.getUsername());
+        if (loginUserRequest.email() != null) {
+            optionalUser = userRepository.findByEmail(loginUserRequest.email());
+        } else if (loginUserRequest.username() != null) {
+            optionalUser = userRepository.findByUsername(loginUserRequest.username());
         } else {
             throw new IllegalArgumentException("Email or username must be provided.");
         }
@@ -89,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(),
-                        loginUserRequest.getPassword()));
+                        loginUserRequest.password()));
         return user;
     }
 

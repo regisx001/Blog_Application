@@ -1,24 +1,44 @@
 package com.regisx001.blog.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
-import com.regisx001.blog.domain.dto.requests.CreateArticleRequest;
-import com.regisx001.blog.domain.dto.requests.UpdateArticleRequest;
-import com.regisx001.blog.domain.entities.Article;
-import com.regisx001.blog.domain.entities.User;
 
 public interface ArticleService {
-    public Page<ArticleDto> getAllArticles(Pageable pageable);
 
-    Article createArticle(CreateArticleRequest articleRequest, User author);
+    // ============= GET OPERATIONS =============
 
-    Article getArticleById(UUID id);
+    Page<ArticleDto.Basic> getAllBasicArticles(Pageable pageable);
 
-    Article updateArticle(UUID id, UpdateArticleRequest Article);
+    Page<ArticleDto.Detailed> getAllDetailedArticles(Pageable pageable);
 
-    void deleteArticle(UUID id);
+    Page<ArticleDto.Summary> getAllSummaryArticles(Pageable pageable);
+
+    List<ArticleDto.Option> getAllArticleOptions();
+
+    ArticleDto.Detailed getArticleById(UUID id);
+
+    // ============= CRUD OPERATIONS =============
+
+    ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId);
+
+    ArticleDto.Detailed updateArticle(UUID id, ArticleDto.UpdateRequest request, UUID authorId);
+
+    void deleteArticle(UUID id, UUID authorId);
+
+    // ============= PUBLISH OPERATIONS =============
+
+    ArticleDto.Detailed publishArticle(UUID id, UUID authorId);
+
+    ArticleDto.Detailed unpublishArticle(UUID id, UUID authorId);
+
+    // ============= USER-SPECIFIC OPERATIONS =============
+
+    Page<ArticleDto.Draft> getUserDrafts(UUID authorId, Pageable pageable);
+
+    Page<ArticleDto.Summary> getPublishedArticles(Pageable pageable);
 }
