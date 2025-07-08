@@ -38,6 +38,7 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
+    @SuppressWarnings("deprecation")
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(getSignInKey())

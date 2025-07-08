@@ -12,7 +12,7 @@ public interface ArticleService {
 
     // ============= GET OPERATIONS =============
 
-    Page<ArticleDto.Basic> getAllBasicArticles(Pageable pageable);
+    Page<ArticleDto.Detailed> getAllBasicArticles(Pageable pageable);
 
     Page<ArticleDto.Detailed> getAllDetailedArticles(Pageable pageable);
 

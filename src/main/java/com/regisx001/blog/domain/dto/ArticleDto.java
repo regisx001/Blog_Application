@@ -35,7 +35,7 @@ public class ArticleDto {
                         LocalDateTime updatedAt,
                         UserDto.Basic user,
                         CategoryDto.Basic category,
-                        List<TagDto.Basic> tags) {
+                        List<String> tags) {
         }
 
         // ============= ARTICLE SUMMARY FOR LISTS =============

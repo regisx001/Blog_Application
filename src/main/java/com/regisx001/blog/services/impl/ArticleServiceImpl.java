@@ -35,8 +35,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleMapper articleMapper;
 
     @Override
-    public Page<ArticleDto.Basic> getAllBasicArticles(Pageable pageable) {
-        return articleRepository.findAll(pageable).map(articleMapper::toBasicDto);
+    public Page<ArticleDto.Detailed> getAllBasicArticles(Pageable pageable) {
+        return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
     }
 
     @Override

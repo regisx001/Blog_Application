@@ -26,7 +26,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping
-    public ResponseEntity<Page<ArticleDto.Basic>> getAllArticles(Pageable pageable) {
+    public ResponseEntity<Page<ArticleDto.Detailed>> getAllArticles(Pageable pageable) {
         return ResponseEntity.ok(articleService.getAllBasicArticles(pageable));
     }
 

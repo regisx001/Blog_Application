@@ -41,7 +41,7 @@ public abstract class ArticleMapper {
     @Mapping(target = "featuredImage", source = "featuredImage", qualifiedByName = "imageNameToFullUri")
     @Mapping(target = "category", source = "category", qualifiedByName = "mapCategoryToBasic")
     @Mapping(target = "user", source = "user", qualifiedByName = "mapUserToBasic")
-    @Mapping(target = "tags", source = "tags", qualifiedByName = "mapTagsToBasic")
+    @Mapping(target = "tags", source = "tags", qualifiedByName = "mapTagsToListString")
     public abstract ArticleDto.Detailed toDetailedDto(Article article);
 
     @Mapping(target = "featuredImage", source = "featuredImage", qualifiedByName = "imageNameToFullUri")
@@ -98,6 +98,17 @@ public abstract class ArticleMapper {
 
         return tags.stream()
                 .map(tag -> new TagDto.Basic(tag.getName()))
+                .collect(Collectors.toList());
+    }
+
+    @Named("mapTagsToListString")
+    protected List<String> mapTagsToListString(List<Tag> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return List.of();
+        }
+
+        return tags.stream()
+                .map(tag -> tag.getName())
                 .collect(Collectors.toList());
     }
 
