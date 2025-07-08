@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.CategoryDto;
-import com.regisx001.blog.domain.dto.requests.UpdateCategoryRequest;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.mappers.CategoryMapper;
 import com.regisx001.blog.repositories.CategoryRepository;
@@ -61,12 +60,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(UUID id, UpdateCategoryRequest category) {
+    public Category updateCategory(UUID id, CategoryDto.UpdateRequest category) {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + id));
-        existingCategory.setTitle(category.getTitle());
-        existingCategory.setDescription(category.getDescription());
-        existingCategory.setImage(category.getImage());
+        existingCategory.setTitle(category.title());
+        existingCategory.setDescription(category.description());
+        existingCategory.setImage(category.image());
         return categoryRepository.save(existingCategory);
     }
 

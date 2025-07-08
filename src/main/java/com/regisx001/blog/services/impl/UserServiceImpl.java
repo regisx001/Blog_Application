@@ -1,13 +1,10 @@
 package com.regisx001.blog.services.impl;
 
 import com.regisx001.blog.domain.dto.UserDto;
-import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.Role;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.mappers.UserMapper;
-import com.regisx001.blog.mappers.UserMapper;
-
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;

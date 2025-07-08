@@ -38,6 +38,7 @@ public class AccountVerificationFilter extends OncePerRequestFilter {
             "/api/v1/auth/resend-verification",
             "/api/v1/auth/refresh-token");
 
+    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

@@ -1,7 +1,5 @@
 package com.regisx001.blog.domain.dto;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
 
