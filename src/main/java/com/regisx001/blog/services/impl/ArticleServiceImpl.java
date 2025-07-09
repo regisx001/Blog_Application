@@ -105,8 +105,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void deleteArticle(UUID id, UUID authorId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteArticle'");
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        articleRepository.delete(article);
     }
 
     @Override
