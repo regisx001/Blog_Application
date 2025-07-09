@@ -1,6 +1,5 @@
 package com.regisx001.blog.services;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -12,13 +11,7 @@ public interface ArticleService {
 
     // ============= GET OPERATIONS =============
 
-    Page<ArticleDto.Detailed> getAllBasicArticles(Pageable pageable);
-
-    Page<ArticleDto.Detailed> getAllDetailedArticles(Pageable pageable);
-
-    Page<ArticleDto.Summary> getAllSummaryArticles(Pageable pageable);
-
-    List<ArticleDto.Option> getAllArticleOptions();
+    Page<ArticleDto.Detailed> getAllArticles(Pageable pageable);
 
     ArticleDto.Detailed getArticleById(UUID id);
 

@@ -9,12 +9,15 @@ import com.regisx001.blog.services.ArticleService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,7 +30,12 @@ public class ArticleController {
 
     @GetMapping
     public ResponseEntity<Page<ArticleDto.Detailed>> getAllArticles(Pageable pageable) {
-        return ResponseEntity.ok(articleService.getAllBasicArticles(pageable));
+        return ResponseEntity.ok(articleService.getAllArticles(pageable));
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<?> getArticle(@PathVariable UUID id) {
+        return ResponseEntity.ok(articleService.getArticleById(id));
     }
 
     @PostMapping

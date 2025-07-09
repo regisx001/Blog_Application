@@ -15,6 +15,7 @@ import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.domain.entities.Tag;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
@@ -35,32 +36,15 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleMapper articleMapper;
 
     @Override
-    public Page<ArticleDto.Detailed> getAllBasicArticles(Pageable pageable) {
+    public Page<ArticleDto.Detailed> getAllArticles(Pageable pageable) {
         return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
     }
 
     @Override
-    public Page<ArticleDto.Detailed> getAllDetailedArticles(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllDetailedArticles'");
-    }
-
-    @Override
-    public Page<ArticleDto.Summary> getAllSummaryArticles(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllSummaryArticles'");
-    }
-
-    @Override
-    public List<ArticleDto.Option> getAllArticleOptions() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllArticleOptions'");
-    }
-
-    @Override
     public ArticleDto.Detailed getArticleById(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getArticleById'");
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
+        return articleMapper.toDetailedDto(article);
     }
 
     @Override
