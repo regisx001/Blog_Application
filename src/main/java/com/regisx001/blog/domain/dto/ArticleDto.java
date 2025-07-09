@@ -33,7 +33,7 @@ public class ArticleDto {
                         LocalDateTime publishedAt,
                         LocalDateTime createdAt,
                         LocalDateTime updatedAt,
-                        UserDto.Basic user,
+                        UserDto.Basic author,
                         CategoryDto.Basic category,
                         List<String> tags) {
         }

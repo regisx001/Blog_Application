@@ -40,7 +40,7 @@ public abstract class ArticleMapper {
 
     @Mapping(target = "featuredImage", source = "featuredImage", qualifiedByName = "imageNameToFullUri")
     @Mapping(target = "category", source = "category", qualifiedByName = "mapCategoryToBasic")
-    @Mapping(target = "user", source = "user", qualifiedByName = "mapUserToBasic")
+    @Mapping(target = "author", source = "user", qualifiedByName = "mapUserToBasic")
     @Mapping(target = "tags", source = "tags", qualifiedByName = "mapTagsToListString")
     public abstract ArticleDto.Detailed toDetailedDto(Article article);
 
@@ -73,13 +73,15 @@ public abstract class ArticleMapper {
 
     @Named("imageNameToFullUri")
     protected String imageNameToFullUri(String image) {
-        if (image.startsWith("http")) {
-            return image;
-        }
 
         if (image == null || image.isBlank()) {
             return null;
         }
+
+        if (image.startsWith("http")) {
+            return image;
+        }
+
         String cleanImage = image.startsWith("/") ? image.substring(1) : image;
         return baseUrl + "/uploads/" + cleanImage;
     }
@@ -90,8 +92,8 @@ public abstract class ArticleMapper {
     }
 
     @Named("mapUserToBasic")
-    protected UserDto.Basic mapUserToBasic(User user) {
-        return user != null ? userMapper.toBasicDto(user) : null;
+    protected UserDto.Basic mapUserToBasic(User author) {
+        return author != null ? userMapper.toBasicDto(author) : null;
     }
 
     @Named("mapTagsToBasic")
