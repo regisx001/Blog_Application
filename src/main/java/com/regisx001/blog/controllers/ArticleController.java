@@ -7,6 +7,7 @@ import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.services.ArticleService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
@@ -14,10 +15,12 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,8 +42,9 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.getArticleById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<ArticleDto.Detailed> createArticle(@RequestBody ArticleDto.CreateRequest createRequest,
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ArticleDto.Detailed> createArticle(
+            @Valid @ModelAttribute ArticleDto.CreateRequest createRequest,
             @AuthenticationPrincipal User userDetails) {
         return new ResponseEntity<>(articleService.createArticle(createRequest, userDetails.getId()),
                 HttpStatus.CREATED);

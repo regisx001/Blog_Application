@@ -22,6 +22,7 @@ import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.repositories.TagRepository;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.ArticleService;
+import com.regisx001.blog.services.StorageService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final ArticleMapper articleMapper;
+    private final StorageService storageService;
 
     @Override
     public Page<ArticleDto.Detailed> getAllArticles(Pageable pageable) {
@@ -49,6 +51,16 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId) {
+
+        String imagePath = null;
+        if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
+            try {
+                imagePath = storageService.store(request.featuredImage());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
+            }
+        }
+
         // 1. Validate author exists
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + authorId));
@@ -65,14 +77,15 @@ public class ArticleServiceImpl implements ArticleService {
         List<Tag> tags = List.of();
         if (request.tags() != null && !request.tags().isEmpty()) {
             tags = request.tags().stream()
-                    .map(tagName -> tagRepository.findByName(tagName.trim().toLowerCase())
-                            .orElseGet(() -> {
-                                Tag newTag = Tag.builder()
-                                        .name(tagName.trim().toLowerCase())
-                                        .slug(slugify(tagName))
-                                        .build();
-                                return tagRepository.save(newTag);
-                            }))
+                    .map(tagName -> {
+                        String cleanName = tagName.trim().toLowerCase();
+                        String slug = slugify(tagName);
+
+                        return tagRepository.findByName(cleanName).orElseGet(() -> {
+                            Tag newTag = Tag.builder().name(cleanName).slug(slug).build();
+                            return tagRepository.save(newTag);
+                        });
+                    })
                     .collect(Collectors.toList());
         }
 
@@ -81,6 +94,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 5. Set relationships
         article.setUser(author);
+        article.setFeaturedImage(imagePath);
         article.setCategory(category);
         article.setTags(tags);
 
