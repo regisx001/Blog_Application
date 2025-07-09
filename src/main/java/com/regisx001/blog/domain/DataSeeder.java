@@ -1,6 +1,7 @@
 package com.regisx001.blog.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -41,10 +42,12 @@ public class DataSeeder implements CommandLineRunner {
             user.setVerificationCodeExpiresAt(null);
             user.setEnabled(true);
             // ✅ ADD ADMIN ROLE
-            // Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN);
-            // // .orElseThrow(() -> new RuntimeException("Admin role not found"));
+            // Role userRole = roleRepository.findByName(RoleType.ROLE_USER);
 
-            // user.getRoles().add(adminRole);
+            Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN);
+            // .orElseThrow(() -> new RuntimeException("Admin role not found"));
+
+            user.setRoles(Set.of(adminRole));
 
             // Save the updated user
             userRepository.save(user);
