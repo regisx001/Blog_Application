@@ -7,15 +7,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.dto.TagDto.Basic;
 import com.regisx001.blog.domain.dto.TagDto.CreateRequest;
 import com.regisx001.blog.domain.dto.TagDto.Detailed;
 import com.regisx001.blog.domain.dto.TagDto.Option;
 import com.regisx001.blog.domain.dto.TagDto.WithCount;
+import com.regisx001.blog.mappers.ArticleMapper;
+import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.services.TagService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
+
+    // private final TagRepository tagRepository;
+    private final ArticleRepository articleRepository;
+    private final ArticleMapper articleMapper;
 
     @Override
     public Page<Basic> getAllBasicTags(Pageable pageable) {
@@ -81,6 +91,13 @@ public class TagServiceImpl implements TagService {
     public List<Basic> createTagsIfNotExist(List<String> names) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createTagsIfNotExist'");
+    }
+
+    @Override
+    public Page<ArticleDto.Detailed> getTagRelatedArticle(Pageable pageable,
+            String tagName) {
+
+        return articleRepository.findArticlesByTagName(tagName, pageable).map(articleMapper::toDetailedDto);
     }
 
 }

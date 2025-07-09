@@ -38,7 +38,4 @@ public class TagDto {
                         String name) {
         }
 
-        // public record TagList(
-        // List<String> tags) {
-        // }
 }

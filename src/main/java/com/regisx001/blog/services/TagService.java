@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.dto.TagDto;
 
 public interface TagService {
@@ -18,6 +19,9 @@ public interface TagService {
     Page<TagDto.WithCount> getPopularTags(Pageable pageable);
 
     List<TagDto.Option> getAllTagOptions();
+
+    // Article related
+    Page<ArticleDto.Detailed> getTagRelatedArticle(Pageable pageable, String tagName);
 
     // Individual tag operations
     TagDto.Detailed getTagById(UUID id);
