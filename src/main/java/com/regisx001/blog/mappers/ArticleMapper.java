@@ -73,6 +73,10 @@ public abstract class ArticleMapper {
 
     @Named("imageNameToFullUri")
     protected String imageNameToFullUri(String image) {
+        if (image.startsWith("http")) {
+            return image;
+        }
+
         if (image == null || image.isBlank()) {
             return null;
         }
