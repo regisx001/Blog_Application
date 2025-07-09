@@ -32,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category createCategory(CategoryDto.CreateWithImageRequest categoryRequest) {
         String imagePath = null;
 
-        if (categoryRequest.image() != null) {
+        if (categoryRequest.image() != null && !categoryRequest.image().isEmpty()) {
             try {
                 imagePath = storageService.store(categoryRequest.image());
             } catch (Exception e) {
