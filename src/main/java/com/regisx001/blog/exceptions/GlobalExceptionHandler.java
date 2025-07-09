@@ -264,7 +264,7 @@ public class GlobalExceptionHandler {
                                 .errors(null)
                                 .build();
 
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
 
         // ============= CATCH-ALL EXCEPTION =============
