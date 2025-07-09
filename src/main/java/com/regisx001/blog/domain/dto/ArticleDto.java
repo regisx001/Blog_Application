@@ -64,7 +64,7 @@ public class ArticleDto {
 
                         List<String> tags,
 
-                        @NotNull(message = "Status is required") ArticleStatus status,
+                        // ArticleStatus status,
 
                         Boolean isPublished,
 

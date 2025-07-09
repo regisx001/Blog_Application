@@ -15,6 +15,7 @@ import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.domain.entities.Tag;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
 import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
@@ -52,15 +53,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId) {
 
-        String imagePath = null;
-        if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
-            try {
-                imagePath = storageService.store(request.featuredImage());
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
-            }
-        }
-
         // 1. Validate author exists
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + authorId));
@@ -92,11 +84,21 @@ public class ArticleServiceImpl implements ArticleService {
         // 4. Create article entity from request
         Article article = articleMapper.toEntity(request);
 
+        String imagePath = null;
+        if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
+            try {
+                imagePath = storageService.store(request.featuredImage());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
+            }
+        }
+
         // 5. Set relationships
         article.setUser(author);
         article.setFeaturedImage(imagePath);
         article.setCategory(category);
         article.setTags(tags);
+        article.setStatus(ArticleStatus.DRAFT);
 
         // 6. Set default values
         article.setIsPublished(request.isPublished() != null ? request.isPublished() : false);
