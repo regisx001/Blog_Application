@@ -58,6 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setRoles(Set.of(userRole));
 
         user.setVerificationCode(generateVerificationCode());
+        user.setAvatar("https://api.dicebear.com/9.x/avataaars/svg?seed=" + user.getUsername());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
         // sendVerificationEmail(user);
