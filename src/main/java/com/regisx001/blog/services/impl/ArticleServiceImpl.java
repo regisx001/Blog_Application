@@ -15,12 +15,15 @@ import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.domain.entities.Tag;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
+import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.repositories.TagRepository;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.ArticleService;
+import com.regisx001.blog.services.StorageService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,38 +36,23 @@ public class ArticleServiceImpl implements ArticleService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final ArticleMapper articleMapper;
+    private final StorageService storageService;
 
     @Override
-    public Page<ArticleDto.Detailed> getAllBasicArticles(Pageable pageable) {
+    public Page<ArticleDto.Detailed> getAllArticles(Pageable pageable) {
         return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
     }
 
     @Override
-    public Page<ArticleDto.Detailed> getAllDetailedArticles(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllDetailedArticles'");
-    }
-
-    @Override
-    public Page<ArticleDto.Summary> getAllSummaryArticles(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllSummaryArticles'");
-    }
-
-    @Override
-    public List<ArticleDto.Option> getAllArticleOptions() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllArticleOptions'");
-    }
-
-    @Override
     public ArticleDto.Detailed getArticleById(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getArticleById'");
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
+        return articleMapper.toDetailedDto(article);
     }
 
     @Override
     public ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId) {
+
         // 1. Validate author exists
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + authorId));
@@ -81,24 +69,36 @@ public class ArticleServiceImpl implements ArticleService {
         List<Tag> tags = List.of();
         if (request.tags() != null && !request.tags().isEmpty()) {
             tags = request.tags().stream()
-                    .map(tagName -> tagRepository.findByName(tagName.trim().toLowerCase())
-                            .orElseGet(() -> {
-                                Tag newTag = Tag.builder()
-                                        .name(tagName.trim().toLowerCase())
-                                        .slug(slugify(tagName))
-                                        .build();
-                                return tagRepository.save(newTag);
-                            }))
+                    .map(tagName -> {
+                        String cleanName = tagName.trim().toLowerCase();
+                        String slug = slugify(tagName);
+
+                        return tagRepository.findByName(cleanName).orElseGet(() -> {
+                            Tag newTag = Tag.builder().name(cleanName).slug(slug).build();
+                            return tagRepository.save(newTag);
+                        });
+                    })
                     .collect(Collectors.toList());
         }
 
         // 4. Create article entity from request
         Article article = articleMapper.toEntity(request);
 
+        String imagePath = null;
+        if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
+            try {
+                imagePath = storageService.store(request.featuredImage());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
+            }
+        }
+
         // 5. Set relationships
         article.setUser(author);
+        article.setFeaturedImage(imagePath);
         article.setCategory(category);
         article.setTags(tags);
+        article.setStatus(ArticleStatus.DRAFT);
 
         // 6. Set default values
         article.setIsPublished(request.isPublished() != null ? request.isPublished() : false);
@@ -121,8 +121,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void deleteArticle(UUID id, UUID authorId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteArticle'");
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        articleRepository.delete(article);
     }
 
     @Override

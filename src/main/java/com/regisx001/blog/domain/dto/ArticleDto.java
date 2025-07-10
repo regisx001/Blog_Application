@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
+import com.regisx001.blog.validation.ValidImage;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +36,7 @@ public class ArticleDto {
                         LocalDateTime publishedAt,
                         LocalDateTime createdAt,
                         LocalDateTime updatedAt,
-                        UserDto.Basic user,
+                        UserDto.Basic author,
                         CategoryDto.Basic category,
                         List<String> tags) {
         }
@@ -55,15 +58,19 @@ public class ArticleDto {
         public record CreateRequest(
                         @NotBlank(message = "Title is required") @Size(min = 5, max = 200, message = "Title must be between 5 and 200 characters") String title,
 
-                        @NotBlank(message = "Content is required") @Size(min = 50, message = "Content must be at least 50 characters") String content,
+                        @NotBlank(message = "Content is required") @Size(min = 5, message = "Content must be at least 50 characters") String content,
 
                         String category,
 
                         List<String> tags,
 
-                        @NotNull(message = "Status is required") ArticleStatus status,
+                        // ArticleStatus status,
 
-                        Boolean isPublished) {
+                        Boolean isPublished,
+
+                        @ValidImage(message = "Invalid image file") MultipartFile featuredImage
+
+        ) {
         }
 
         // ============= UPDATE REQUEST =============
