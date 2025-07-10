@@ -1,7 +1,6 @@
 package com.regisx001.blog.services;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +17,6 @@ public interface TagService {
 
     // Article related
     Page<ArticleDto.Detailed> getTagRelatedArticle(Pageable pageable, String tagName);
-
-    void deleteTag(UUID id);
-
-    // Utility methods
-    List<TagDto.Basic> getTagsByNames(List<String> names);
 
     List<Tag> createTagsIfNotExist(List<String> names);
 }

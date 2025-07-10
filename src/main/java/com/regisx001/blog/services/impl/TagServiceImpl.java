@@ -1,7 +1,6 @@
 package com.regisx001.blog.services.impl;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
-import com.regisx001.blog.domain.dto.TagDto.Basic;
 import com.regisx001.blog.domain.dto.TagDto.WithCount;
 import com.regisx001.blog.domain.entities.Tag;
 import com.regisx001.blog.mappers.ArticleMapper;
@@ -36,12 +34,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void deleteTag(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTag'");
-    }
-
-    @Override
     public List<Tag> createTagsIfNotExist(List<String> names) {
         if (names == null || names.isEmpty()) {
             return List.of();
@@ -65,12 +57,6 @@ public class TagServiceImpl implements TagService {
             String tagName) {
 
         return articleRepository.findArticlesByTagName(tagName, pageable).map(articleMapper::toDetailedDto);
-    }
-
-    @Override
-    public List<Basic> getTagsByNames(List<String> names) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTagsByNames'");
     }
 
     private String slugify(String input) {
