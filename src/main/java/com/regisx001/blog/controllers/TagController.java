@@ -17,6 +17,11 @@ import lombok.RequiredArgsConstructor;
 public class TagController {
     private final TagService tagService;
 
+    @GetMapping
+    public ResponseEntity<?> getTags(Pageable pageable) {
+        return ResponseEntity.ok(tagService.getAllTagsWithCount(pageable));
+    }
+
     @GetMapping(path = "/{tagName}")
     public ResponseEntity<?> getRelatedArticles(Pageable pageable, @PathVariable String tagName) {
 

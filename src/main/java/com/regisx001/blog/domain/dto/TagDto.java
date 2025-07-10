@@ -24,7 +24,8 @@ public class TagDto {
         public record WithCount(
                         UUID id,
                         String name,
-                        Integer articlesCount) {
+                        Integer articlesCount,
+                        LocalDateTime createdAt) {
         }
 
         // ============= CREATE REQUEST =============
