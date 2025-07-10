@@ -38,6 +38,11 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
+    @GetMapping("/titles")
+    public ResponseEntity<?> getAllCategoriesTitles() {
+        return ResponseEntity.ok(categoryService.getCategoriesTitles());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto.Detailed> getCategoryById(@PathVariable UUID id) {
         Category category = categoryService.getCategoryById(id);

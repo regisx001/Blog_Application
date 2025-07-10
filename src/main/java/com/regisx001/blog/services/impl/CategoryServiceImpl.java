@@ -1,5 +1,6 @@
 package com.regisx001.blog.services.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -87,6 +88,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category findByTitle(String title) {
         return categoryRepository.findByTitle(title).orElseThrow(() -> new RuntimeException("Category not found"));
+    }
+
+    @Override
+    public List<String> getCategoriesTitles() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(Category::getTitle)
+                .toList();
     }
 
 }
