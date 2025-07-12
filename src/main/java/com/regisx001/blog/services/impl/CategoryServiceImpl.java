@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
 import com.regisx001.blog.domain.dto.CategoryDto;
 import com.regisx001.blog.domain.entities.Category;
+import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.mappers.CategoryMapper;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.services.CategoryService;
@@ -23,10 +25,11 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final StorageService storageService;
     private final CategoryMapper categoryMapper;
+    private final ArticleMapper articleMapper;
 
     @Override
-    public Page<CategoryDto.Detailed> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(categoryMapper::toDetailedDto);
+    public Page<CategoryDto.Basic> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toBasicDto);
     }
 
     @Override
@@ -96,6 +99,15 @@ public class CategoryServiceImpl implements CategoryService {
                 .stream()
                 .map(Category::getTitle)
                 .toList();
+    }
+
+    @Override
+    public Page<Detailed> getCategoryRelatedArticles(UUID id, Pageable pageable) {
+        if (!categoryRepository.existsById(id)) {
+            throw new IllegalArgumentException("Category not found with id: " + id);
+        }
+
+        return categoryRepository.findArticlesByCategoryId(id, pageable).map(articleMapper::toDetailedDto);
     }
 
 }
