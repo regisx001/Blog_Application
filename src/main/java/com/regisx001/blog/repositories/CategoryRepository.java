@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
     public Optional<Category> findByTitle(String title);
 
+    boolean existsByTitle(String title);
+
     @Query("SELECT a FROM Article a WHERE a.category.id = :categoryId ORDER BY a.createdAt DESC")
     Page<Article> findArticlesByCategoryId(@Param("categoryId") UUID categoryId, Pageable pageable);
 

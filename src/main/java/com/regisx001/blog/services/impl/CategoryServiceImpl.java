@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
 import com.regisx001.blog.domain.dto.CategoryDto;
 import com.regisx001.blog.domain.entities.Category;
+import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.mappers.CategoryMapper;
 import com.regisx001.blog.repositories.CategoryRepository;
@@ -89,7 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
     // }
 
     @Override
-    public Category findByTitle(String title) {
+    public Category getCategoryByTitle(String title) {
         return categoryRepository.findByTitle(title).orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
@@ -102,12 +103,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<Detailed> getCategoryRelatedArticles(UUID id, Pageable pageable) {
-        if (!categoryRepository.existsById(id)) {
-            throw new IllegalArgumentException("Category not found with id: " + id);
+    public Page<Detailed> getCategoryRelatedArticles(String title, Pageable pageable) {
+        if (!categoryRepository.existsByTitle(title)) {
+            throw new ItemNotFoundException("Category not found with title: " + title);
         }
 
-        return categoryRepository.findArticlesByCategoryId(id, pageable).map(articleMapper::toDetailedDto);
+        return categoryRepository.findArticlesByCategoryTitle(title, pageable).map(articleMapper::toDetailedDto);
     }
 
 }

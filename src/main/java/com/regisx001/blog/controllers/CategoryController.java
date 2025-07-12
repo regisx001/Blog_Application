@@ -44,15 +44,23 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoriesTitles());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto.Detailed> getCategoryById(@PathVariable UUID id) {
-        Category category = categoryService.getCategoryById(id);
+    // @GetMapping("/{id}")
+    // public ResponseEntity<CategoryDto.Detailed> getCategoryById(@PathVariable
+    // UUID id) {
+    // Category category = categoryService.getCategoryById(id);
+    // return ResponseEntity.ok(categoryMapper.toDetailedDto(category));
+    // }
+
+    @GetMapping("/{title}")
+    public ResponseEntity<CategoryDto.Detailed> getCategoryByTitle(@PathVariable String title) {
+        Category category = categoryService.getCategoryByTitle(title);
         return ResponseEntity.ok(categoryMapper.toDetailedDto(category));
     }
 
-    @GetMapping("/{id}/articles")
-    public ResponseEntity<Page<ArticleDto.Detailed>> getArticlesByCategoryId(@PathVariable UUID id, Pageable pageable) {
-        return ResponseEntity.ok(categoryService.getCategoryRelatedArticles(id, pageable));
+    @GetMapping("/{title}/articles")
+    public ResponseEntity<Page<ArticleDto.Detailed>> getArticlesByCategoryId(@PathVariable String title,
+            Pageable pageable) {
+        return ResponseEntity.ok(categoryService.getCategoryRelatedArticles(title, pageable));
     }
 
     // @PostMapping

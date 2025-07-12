@@ -19,9 +19,9 @@ public interface CategoryService {
 
     Category getCategoryById(UUID id);
 
-    Page<ArticleDto.Detailed> getCategoryRelatedArticles(UUID id, Pageable pageable);
+    Page<ArticleDto.Detailed> getCategoryRelatedArticles(String title, Pageable pageable);
 
-    Category findByTitle(String title);
+    Category getCategoryByTitle(String title);
 
     Category updateCategory(UUID id, CategoryDto.UpdateRequest category);
 
