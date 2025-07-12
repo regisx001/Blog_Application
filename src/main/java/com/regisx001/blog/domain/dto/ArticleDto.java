@@ -112,4 +112,8 @@ public class ArticleDto {
                         UUID id,
                         String title) {
         }
+
+        public record DeleteInBatchRequest(
+                        List<UUID> ids) {
+        }
 }

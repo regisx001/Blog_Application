@@ -18,7 +18,6 @@ import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
-import com.regisx001.blog.repositories.TagRepository;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.ArticleService;
 import com.regisx001.blog.services.StorageService;
@@ -33,7 +32,6 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final TagRepository tagRepository;
     private final TagService tagService;
     private final ArticleMapper articleMapper;
     private final StorageService storageService;
@@ -161,5 +159,10 @@ public class ArticleServiceImpl implements ArticleService {
                 .replaceAll("\\s+", "-") // Replace spaces with hyphens
                 .replaceAll("-+", "-") // Replace multiple hyphens with single hyphen
                 .replaceAll("^-|-$", ""); // Remove leading/trailing hyphens
+    }
+
+    @Override
+    public void deleteArticlesInBatchById(Iterable<UUID> ids) {
+        articleRepository.deleteAllByIdInBatch(ids);
     }
 }

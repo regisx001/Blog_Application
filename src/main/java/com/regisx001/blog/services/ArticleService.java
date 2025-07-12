@@ -23,6 +23,8 @@ public interface ArticleService {
 
     void deleteArticle(UUID id, UUID authorId);
 
+    void deleteArticlesInBatchById(Iterable<UUID> ids);
+
     // ============= PUBLISH OPERATIONS =============
 
     ArticleDto.Detailed publishArticle(UUID id, UUID authorId);

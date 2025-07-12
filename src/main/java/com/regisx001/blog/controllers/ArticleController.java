@@ -56,4 +56,10 @@ public class ArticleController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping(path = "/batch")
+    public ResponseEntity<?> deleteArticlesInBatch(
+            @ModelAttribute ArticleDto.DeleteInBatchRequest deleteInBatchRequest) {
+        articleService.deleteArticlesInBatchById(deleteInBatchRequest.ids());
+        return ResponseEntity.noContent().build();
+    }
 }
