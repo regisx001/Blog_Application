@@ -16,6 +16,17 @@ import com.regisx001.blog.domain.entities.Tag;
 public interface TagRepository extends JpaRepository<Tag, UUID> {
     Optional<Tag> findByName(String name);
 
+    @Query("SELECT t FROM Tag t LEFT JOIN t.articles a " +
+            "GROUP BY t.id, t.name, t.slug, t.description, t.createdAt " +
+            "ORDER BY COUNT(a) DESC, t.name ASC")
+    Page<Tag> findAllTagsOrderByArticleCountDesc(Pageable pageable);
+
+    // Get all tags with article count, sorted by count (ascending)
+    @Query("SELECT t FROM Tag t LEFT JOIN t.articles a " +
+            "GROUP BY t.id, t.name, t.slug, t.description, t.createdAt " +
+            "ORDER BY COUNT(a) ASC, t.name ASC")
+    Page<Tag> findAllTagsOrderByArticleCountAsc(Pageable pageable);
+
     // TODO: TO UNDERSTAND LATER (AI GENERATED)
     // Get articles related to a specific tag by tag ID
     @Query("SELECT a FROM Article a JOIN a.tags t WHERE t.id = :tagId")

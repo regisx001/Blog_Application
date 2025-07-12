@@ -29,7 +29,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Page<WithCount> getAllTagsWithCount(Pageable pageable) {
-        return tagRepository.findAll(pageable)
+        return tagRepository.findAllTagsOrderByArticleCountDesc(pageable)
                 .map(tagMapper::toWithCountDto);
     }
 
