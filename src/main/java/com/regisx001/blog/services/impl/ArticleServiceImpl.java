@@ -3,8 +3,6 @@ package com.regisx001.blog.services.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,10 +18,10 @@ import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
-import com.regisx001.blog.repositories.TagRepository;
 import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.ArticleService;
 import com.regisx001.blog.services.StorageService;
+import com.regisx001.blog.services.TagService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +32,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final TagRepository tagRepository;
+    private final TagService tagService;
     private final ArticleMapper articleMapper;
     private final StorageService storageService;
 
@@ -66,20 +64,20 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         // 3. Handle tags - create if they don't exist
-        List<Tag> tags = List.of();
-        if (request.tags() != null && !request.tags().isEmpty()) {
-            tags = request.tags().stream()
-                    .map(tagName -> {
-                        String cleanName = tagName.trim().toLowerCase();
-                        String slug = slugify(tagName);
+        List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
+        // if (request.tags() != null && !request.tags().isEmpty()) {
+        // tags = request.tags().stream()
+        // .map(tagName -> {
+        // String cleanName = tagName.trim().toLowerCase();
+        // String slug = slugify(tagName);
 
-                        return tagRepository.findByName(cleanName).orElseGet(() -> {
-                            Tag newTag = Tag.builder().name(cleanName).slug(slug).build();
-                            return tagRepository.save(newTag);
-                        });
-                    })
-                    .collect(Collectors.toList());
-        }
+        // return tagRepository.findByName(cleanName).orElseGet(() -> {
+        // Tag newTag = Tag.builder().name(cleanName).slug(slug).build();
+        // return tagRepository.save(newTag);
+        // });
+        // })
+        // .collect(Collectors.toList());
+        // }
 
         // 4. Create article entity from request
         Article article = articleMapper.toEntity(request);
@@ -161,5 +159,10 @@ public class ArticleServiceImpl implements ArticleService {
                 .replaceAll("\\s+", "-") // Replace spaces with hyphens
                 .replaceAll("-+", "-") // Replace multiple hyphens with single hyphen
                 .replaceAll("^-|-$", ""); // Remove leading/trailing hyphens
+    }
+
+    @Override
+    public void deleteArticlesInBatchById(Iterable<UUID> ids) {
+        articleRepository.deleteAllByIdInBatch(ids);
     }
 }

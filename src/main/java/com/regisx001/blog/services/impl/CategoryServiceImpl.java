@@ -1,13 +1,17 @@
 package com.regisx001.blog.services.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
 import com.regisx001.blog.domain.dto.CategoryDto;
 import com.regisx001.blog.domain.entities.Category;
+import com.regisx001.blog.exceptions.ItemNotFoundException;
+import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.mappers.CategoryMapper;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.services.CategoryService;
@@ -22,10 +26,11 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final StorageService storageService;
     private final CategoryMapper categoryMapper;
+    private final ArticleMapper articleMapper;
 
     @Override
-    public Page<CategoryDto.Detailed> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable).map(categoryMapper::toDetailedDto);
+    public Page<CategoryDto.Basic> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toBasicDto);
     }
 
     @Override
@@ -85,8 +90,25 @@ public class CategoryServiceImpl implements CategoryService {
     // }
 
     @Override
-    public Category findByTitle(String title) {
+    public Category getCategoryByTitle(String title) {
         return categoryRepository.findByTitle(title).orElseThrow(() -> new RuntimeException("Category not found"));
+    }
+
+    @Override
+    public List<String> getCategoriesTitles() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(Category::getTitle)
+                .toList();
+    }
+
+    @Override
+    public Page<Detailed> getCategoryRelatedArticles(String title, Pageable pageable) {
+        if (!categoryRepository.existsByTitle(title)) {
+            throw new ItemNotFoundException("Category not found with title: " + title);
+        }
+
+        return categoryRepository.findArticlesByCategoryTitle(title, pageable).map(articleMapper::toDetailedDto);
     }
 
 }

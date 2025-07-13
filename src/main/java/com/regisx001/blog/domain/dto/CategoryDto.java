@@ -16,7 +16,9 @@ public class CategoryDto {
         public record Basic(
                         UUID id,
                         String title,
-                        String image) {
+                        String description,
+                        String image,
+                        LocalDateTime createdAt) {
         }
 
         // ============= DETAILED CATEGORY DTO =============
@@ -25,6 +27,7 @@ public class CategoryDto {
                         String title,
                         String description,
                         String image,
+                        // List<ArticleDto.Basic> articles,
                         LocalDateTime createdAt,
                         LocalDateTime updatedAt) {
         }

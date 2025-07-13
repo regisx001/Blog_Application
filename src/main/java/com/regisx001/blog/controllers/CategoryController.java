@@ -3,6 +3,7 @@ package com.regisx001.blog.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.dto.CategoryDto;
 import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.mappers.CategoryMapper;
@@ -33,15 +34,33 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
 
     @GetMapping
-    public ResponseEntity<Page<CategoryDto.Detailed>> getAllCategories(Pageable pageable) {
-        Page<CategoryDto.Detailed> categories = categoryService.getAllCategories(pageable);
+    public ResponseEntity<Page<CategoryDto.Basic>> getAllCategories(Pageable pageable) {
+        Page<CategoryDto.Basic> categories = categoryService.getAllCategories(pageable);
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto.Detailed> getCategoryById(@PathVariable UUID id) {
-        Category category = categoryService.getCategoryById(id);
+    @GetMapping("/titles")
+    public ResponseEntity<?> getAllCategoriesTitles() {
+        return ResponseEntity.ok(categoryService.getCategoriesTitles());
+    }
+
+    // @GetMapping("/{id}")
+    // public ResponseEntity<CategoryDto.Detailed> getCategoryById(@PathVariable
+    // UUID id) {
+    // Category category = categoryService.getCategoryById(id);
+    // return ResponseEntity.ok(categoryMapper.toDetailedDto(category));
+    // }
+
+    @GetMapping("/{title}")
+    public ResponseEntity<CategoryDto.Detailed> getCategoryByTitle(@PathVariable String title) {
+        Category category = categoryService.getCategoryByTitle(title);
         return ResponseEntity.ok(categoryMapper.toDetailedDto(category));
+    }
+
+    @GetMapping("/{title}/articles")
+    public ResponseEntity<Page<ArticleDto.Detailed>> getArticlesByCategoryId(@PathVariable String title,
+            Pageable pageable) {
+        return ResponseEntity.ok(categoryService.getCategoryRelatedArticles(title, pageable));
     }
 
     // @PostMapping
