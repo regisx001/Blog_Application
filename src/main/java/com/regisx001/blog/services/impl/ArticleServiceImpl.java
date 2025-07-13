@@ -171,4 +171,10 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
     }
 
+    @Override
+    public Page<Detailed> getArticlesByStatus(ArticleStatus status, Pageable pageable) {
+
+        return articleRepository.findArticlesByStatus(status, pageable).map(articleMapper::toDetailedDto);
+    }
+
 }

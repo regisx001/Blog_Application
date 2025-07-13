@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
+import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
 
 public interface ArticleService {
 
@@ -41,5 +42,7 @@ public interface ArticleService {
     // ============= ADMINISTRATION SPECIFIC OPERATIONS =============
 
     Page<ArticleDto.Detailed> getAllArticles(Pageable pageable);
+
+    Page<ArticleDto.Detailed> getArticlesByStatus(ArticleStatus status, Pageable pageable);
 
 }

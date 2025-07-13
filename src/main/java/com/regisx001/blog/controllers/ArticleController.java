@@ -73,10 +73,12 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.unsendForReview(id, userDetails.getId()));
     }
 
-    @PostMapping("/publish/{id}")
-    public ResponseEntity<?> publishArticle(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
-        return ResponseEntity.ok(articleService.publishArticle(id, userDetails.getId()));
-    }
+    // @PostMapping("/publish/{id}")
+    // public ResponseEntity<?> publishArticle(@PathVariable UUID id,
+    // @AuthenticationPrincipal User userDetails) {
+    // return ResponseEntity.ok(articleService.publishArticle(id,
+    // userDetails.getId()));
+    // }
 
     @PostMapping("/unpublish/{id}")
     public ResponseEntity<?> unpublishArticle(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
