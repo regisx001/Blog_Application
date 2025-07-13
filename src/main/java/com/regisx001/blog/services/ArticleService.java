@@ -11,7 +11,7 @@ public interface ArticleService {
 
     // ============= GET OPERATIONS =============
 
-    Page<ArticleDto.Detailed> getAllArticles(Pageable pageable);
+    Page<ArticleDto.Detailed> getPublishedArticles(Pageable pageable);
 
     ArticleDto.Detailed getArticleById(UUID id);
 
@@ -35,5 +35,8 @@ public interface ArticleService {
 
     Page<ArticleDto.Draft> getUserDrafts(UUID authorId, Pageable pageable);
 
-    Page<ArticleDto.Summary> getPublishedArticles(Pageable pageable);
+    // ============= ADMINISTRATION SPECIFIC OPERATIONS =============
+
+    Page<ArticleDto.Detailed> getAllArticles(Pageable pageable);
+
 }

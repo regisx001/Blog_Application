@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
+import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
 import com.regisx001.blog.domain.dto.ArticleDto.UpdateRequest;
 import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Category;
@@ -37,14 +38,18 @@ public class ArticleServiceImpl implements ArticleService {
     private final StorageService storageService;
 
     @Override
-    public Page<ArticleDto.Detailed> getAllArticles(Pageable pageable) {
-        return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
+    public Page<ArticleDto.Detailed> getPublishedArticles(Pageable pageable) {
+        return articleRepository.findArticlesByStatus(ArticleStatus.PUBLISHED, pageable)
+                .map(articleMapper::toDetailedDto);
     }
 
     @Override
     public ArticleDto.Detailed getArticleById(UUID id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
+        if (article.getStatus() != ArticleStatus.PUBLISHED) {
+            throw new ItemNotFoundException("Article Not found");
+        }
         return articleMapper.toDetailedDto(article);
     }
 
@@ -143,26 +148,12 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<ArticleDto.Summary> getPublishedArticles(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPublishedArticles'");
-    }
-
-    private String slugify(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return "";
-        }
-
-        return input.trim()
-                .toLowerCase()
-                .replaceAll("[^a-z0-9\\s-]", "") // Remove special characters except spaces and hyphens
-                .replaceAll("\\s+", "-") // Replace spaces with hyphens
-                .replaceAll("-+", "-") // Replace multiple hyphens with single hyphen
-                .replaceAll("^-|-$", ""); // Remove leading/trailing hyphens
+    public void deleteArticlesInBatchById(Iterable<UUID> ids) {
+        articleRepository.deleteAllByIdInBatch(ids);
     }
 
     @Override
-    public void deleteArticlesInBatchById(Iterable<UUID> ids) {
-        articleRepository.deleteAllByIdInBatch(ids);
+    public Page<Detailed> getAllArticles(Pageable pageable) {
+        return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
     }
 }

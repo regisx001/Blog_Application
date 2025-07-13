@@ -9,11 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.regisx001.blog.domain.entities.Article;
+import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
 
 public interface ArticleRepository extends JpaRepository<Article, UUID> {
+    Page<Article> findArticlesByStatus(ArticleStatus status, Pageable pageable);
 
     // Get articles related to a specific tag by tag name
     @Query("SELECT a FROM Article a JOIN a.tags t WHERE t.name = :tagName")
     Page<Article> findArticlesByTagName(@Param("tagName") String tagName, Pageable pageable);
 
+    // @Query("SELECT a FROM Article WHERE a.status = :articleStatus")
+    // Page<Article> findArticlesByStatus(@Param("articleStatus") String
+    // articleStatus, Pageable pageable);
 }
