@@ -32,6 +32,7 @@ public class ArticleDto {
                         String content,
                         String featuredImage,
                         ArticleStatus status,
+                        String feedback,
                         Boolean isPublished,
                         LocalDateTime publishedAt,
                         LocalDateTime createdAt,

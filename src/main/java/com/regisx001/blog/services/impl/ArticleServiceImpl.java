@@ -116,11 +116,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto.Detailed publishArticle(UUID id, UUID authorId) {
         // TODO: CHECK OWNERSHIP AND PERMISIONS
-
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
-        article.setStatus(ArticleStatus.PUBLISHED);
+        Article article = changeArticleStatus(id, ArticleStatus.PUBLISHED);
         article.setIsPublished(true);
+        article.setPublishedAt(LocalDateTime.now());
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
@@ -128,9 +126,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDto.Detailed unpublishArticle(UUID id, UUID authorId) {
         // TODO: CHECK OWNERSHIP AND PERMISIONS
 
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
-        article.setStatus(ArticleStatus.DRAFT);
+        Article article = changeArticleStatus(id, ArticleStatus.DRAFT);
         article.setIsPublished(false);
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
@@ -146,36 +142,30 @@ public class ArticleServiceImpl implements ArticleService {
 
         // TODO: CHECK OWNERSHIP AND PERMISIONS
 
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
-        article.setStatus(ArticleStatus.PENDING_REVIEW);
+        Article article = changeArticleStatus(id, ArticleStatus.PENDING_REVIEW);
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
     public Detailed unsendForReview(UUID id, UUID authorId) {
         // TODO: CHECK OWNERSHIP AND PERMISIONS
-
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
-        article.setStatus(ArticleStatus.DRAFT);
+        Article article = changeArticleStatus(id, ArticleStatus.DRAFT);
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
     public Detailed approveArticle(UUID id) {
         // TODO: CHECK OWNERSHIP AND PERMISIONS
-
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
-        article.setStatus(ArticleStatus.APPROVED);
+        Article article = changeArticleStatus(id, ArticleStatus.APPROVED);
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
     public Detailed rejectArticle(UUID id, RejectionRequest rejectionRequest) {
-        // TODO IMPLEMENT LATER
-        throw new UnsupportedOperationException("Unimplemented method 'rejectArticle'");
+
+        Article article = changeArticleStatus(id, ArticleStatus.REJECTED);
+        article.setFeedback(rejectionRequest.feedback());
+        return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
@@ -194,4 +184,10 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findArticlesByStatus(status, pageable).map(articleMapper::toDetailedDto);
     }
 
+    private Article changeArticleStatus(UUID id, ArticleStatus status) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        article.setStatus(ArticleStatus.APPROVED);
+        return article;
+    }
 }
