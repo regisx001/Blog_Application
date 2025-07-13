@@ -114,14 +114,24 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDto.Detailed publishArticle(UUID id, UUID authorId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'publishArticle'");
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        article.setStatus(ArticleStatus.PUBLISHED);
+        article.setIsPublished(true);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
     public ArticleDto.Detailed unpublishArticle(UUID id, UUID authorId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'unpublishArticle'");
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        article.setStatus(ArticleStatus.DRAFT);
+        article.setIsPublished(false);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
