@@ -35,6 +35,10 @@ public interface ArticleService {
 
     ArticleDto.Detailed unpublishArticle(UUID id, UUID authorId);
 
+    ArticleDto.Detailed approveArticle(UUID id);
+
+    ArticleDto.Detailed rejectArticle(UUID id, ArticleDto.RejectionRequest rejectionRequest);
+
     // ============= USER-SPECIFIC OPERATIONS =============
 
     Page<ArticleDto.Draft> getUserDrafts(UUID authorId, Pageable pageable);

@@ -116,4 +116,8 @@ public class ArticleDto {
         public record DeleteInBatchRequest(
                         List<UUID> ids) {
         }
+
+        public record RejectionRequest(
+                        String feedback) {
+        }
 }

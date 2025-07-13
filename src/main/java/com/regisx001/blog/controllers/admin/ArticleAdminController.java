@@ -10,13 +10,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
-import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.services.ArticleService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +26,33 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class ArticleAdminController {
-    private final ArticleMapper articleMapper;
     private final ArticleService articleService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ArticleDto.Detailed> getArticle(@PathVariable UUID id) {
+        return ResponseEntity.ok(articleService.getArticleById(id)); // Admin can see any article
+    }
 
     @GetMapping("/status/{status}")
     public ResponseEntity<Page<ArticleDto.Detailed>> getArticlesByStatus(
             @PathVariable ArticleStatus status, Pageable pageable) {
         return ResponseEntity.ok(articleService.getArticlesByStatus(status, pageable));
+    }
+
+    @GetMapping("/pending-review")
+    public ResponseEntity<Page<ArticleDto.Detailed>> getPendingReviewArticles(Pageable pageable) {
+        return ResponseEntity.ok(articleService.getArticlesByStatus(ArticleStatus.PENDING_REVIEW, pageable));
+    }
+
+    @PostMapping("/approve/{id}")
+    public ResponseEntity<ArticleDto.Detailed> approveArticle(@PathVariable UUID id) {
+        return ResponseEntity.ok(articleService.approveArticle(id));
+    }
+
+    @PostMapping("/reject/{id}")
+    public ResponseEntity<ArticleDto.Detailed> rejectArticle(
+            @PathVariable UUID id, @RequestBody ArticleDto.RejectionRequest rejectionRequest) {
+        return ResponseEntity.ok(articleService.rejectArticle(id, rejectionRequest));
     }
 
     @PostMapping("/publish/{id}")

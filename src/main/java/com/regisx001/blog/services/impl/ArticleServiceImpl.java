@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
+import com.regisx001.blog.domain.dto.ArticleDto.RejectionRequest;
 import com.regisx001.blog.domain.dto.ArticleDto.UpdateRequest;
 import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Category;
@@ -159,6 +160,22 @@ public class ArticleServiceImpl implements ArticleService {
                 .orElseThrow(() -> new ItemNotFoundException("Article not found"));
         article.setStatus(ArticleStatus.DRAFT);
         return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
+
+    @Override
+    public Detailed approveArticle(UUID id) {
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        article.setStatus(ArticleStatus.APPROVED);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
+
+    @Override
+    public Detailed rejectArticle(UUID id, RejectionRequest rejectionRequest) {
+        // TODO IMPLEMENT LATER
+        throw new UnsupportedOperationException("Unimplemented method 'rejectArticle'");
     }
 
     @Override
