@@ -56,11 +56,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId) {
 
-        // 1. Validate author exists
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + authorId));
 
-        // 2. Validate and get category
         Category category = null;
         if (request.category() != null) {
             category = categoryRepository.findByTitle(request.category())
@@ -68,23 +66,8 @@ public class ArticleServiceImpl implements ArticleService {
                             () -> new IllegalArgumentException("Category not found with id: " + request.category()));
         }
 
-        // 3. Handle tags - create if they don't exist
         List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
-        // if (request.tags() != null && !request.tags().isEmpty()) {
-        // tags = request.tags().stream()
-        // .map(tagName -> {
-        // String cleanName = tagName.trim().toLowerCase();
-        // String slug = slugify(tagName);
 
-        // return tagRepository.findByName(cleanName).orElseGet(() -> {
-        // Tag newTag = Tag.builder().name(cleanName).slug(slug).build();
-        // return tagRepository.save(newTag);
-        // });
-        // })
-        // .collect(Collectors.toList());
-        // }
-
-        // 4. Create article entity from request
         Article article = articleMapper.toEntity(request);
 
         String imagePath = null;
@@ -148,6 +131,27 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public Detailed sendForReview(UUID id, UUID authorId) {
+
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        article.setStatus(ArticleStatus.PENDING_REVIEW);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
+
+    @Override
+    public Detailed unsendForReview(UUID id, UUID authorId) {
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        article.setStatus(ArticleStatus.DRAFT);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
+
+    @Override
     public void deleteArticlesInBatchById(Iterable<UUID> ids) {
         articleRepository.deleteAllByIdInBatch(ids);
     }
@@ -156,4 +160,5 @@ public class ArticleServiceImpl implements ArticleService {
     public Page<Detailed> getAllArticles(Pageable pageable) {
         return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
     }
+
 }

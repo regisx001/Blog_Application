@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/api/v1/articles")
@@ -62,6 +61,16 @@ public class ArticleController {
             @ModelAttribute ArticleDto.DeleteInBatchRequest deleteInBatchRequest) {
         articleService.deleteArticlesInBatchById(deleteInBatchRequest.ids());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/send-review/{id}")
+    public ResponseEntity<?> sendArticleForReview(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.sendForReview(id, userDetails.getId()));
+    }
+
+    @PostMapping("/unsend-review/{id}")
+    public ResponseEntity<?> unsendArticleForReview(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.unsendForReview(id, userDetails.getId()));
     }
 
     // ==================== ADMINS-ENDPOINTS ======================

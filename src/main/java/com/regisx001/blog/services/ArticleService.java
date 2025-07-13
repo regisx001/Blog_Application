@@ -26,6 +26,9 @@ public interface ArticleService {
     void deleteArticlesInBatchById(Iterable<UUID> ids);
 
     // ============= PUBLISH OPERATIONS =============
+    ArticleDto.Detailed sendForReview(UUID id, UUID authorId);
+
+    ArticleDto.Detailed unsendForReview(UUID id, UUID authorId);
 
     ArticleDto.Detailed publishArticle(UUID id, UUID authorId);
 
