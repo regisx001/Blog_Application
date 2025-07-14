@@ -66,6 +66,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public Page<Detailed> searchArticles(String searchTerms, Pageable pageable) {
+        return articleRepository.searchPublishedArticles(searchTerms, pageable).map(articleMapper::toDetailedDto);
+    }
+
+    @Override
     public ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId) {
 
         User author = userRepository.findById(authorId)

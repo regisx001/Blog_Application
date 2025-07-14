@@ -20,6 +20,8 @@ public interface ArticleService {
 
     Page<ArticleDto.Detailed> getDraftArticlesByUser(UUID userId, Pageable pageable);
 
+    Page<ArticleDto.Detailed> searchArticles(String searchTerms, Pageable pageable);
+
     // ============= CRUD OPERATIONS =============
 
     ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId);

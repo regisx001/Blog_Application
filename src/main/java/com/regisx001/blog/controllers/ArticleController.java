@@ -37,6 +37,12 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.getPublishedArticles(pageable));
     }
 
+    @GetMapping(path = "/search/{searchTerms}")
+    public ResponseEntity<Page<ArticleDto.Detailed>> searchArticles(@PathVariable String searchTerms,
+            Pageable pageable) {
+        return ResponseEntity.ok(articleService.searchArticles(searchTerms, pageable));
+    }
+
     @GetMapping(path = "/my-articles")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<ArticleDto.Detailed>> getArticlesByUser(Pageable pageable,
