@@ -55,6 +55,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public Page<Detailed> getArticlesByUser(UUID userId, Pageable pageable) {
+        return articleRepository.findArticlesByUserId(userId, pageable).map(articleMapper::toDetailedDto);
+    }
+
+    @Override
     public ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId) {
 
         User author = userRepository.findById(authorId)
@@ -190,4 +195,5 @@ public class ArticleServiceImpl implements ArticleService {
         article.setStatus(status);
         return article;
     }
+
 }

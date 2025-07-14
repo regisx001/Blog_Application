@@ -37,6 +37,13 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.getPublishedArticles(pageable));
     }
 
+    @GetMapping(path = "/my-articles")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<ArticleDto.Detailed>> getArticlesByUser(Pageable pageable,
+            @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.getArticlesByUser(userDetails.getId(), pageable));
+    }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getArticle(@PathVariable UUID id) {
         return ResponseEntity.ok(articleService.getArticleById(id));

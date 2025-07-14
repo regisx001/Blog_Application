@@ -16,6 +16,8 @@ public interface ArticleService {
 
     ArticleDto.Detailed getArticleById(UUID id);
 
+    Page<ArticleDto.Detailed> getArticlesByUser(UUID userId, Pageable pageable);
+
     // ============= CRUD OPERATIONS =============
 
     ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId);
