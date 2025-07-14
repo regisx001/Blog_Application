@@ -18,6 +18,8 @@ public interface ArticleService {
 
     Page<ArticleDto.Detailed> getArticlesByUser(UUID userId, Pageable pageable);
 
+    Page<ArticleDto.Detailed> getDraftArticlesByUser(UUID userId, Pageable pageable);
+
     // ============= CRUD OPERATIONS =============
 
     ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId);

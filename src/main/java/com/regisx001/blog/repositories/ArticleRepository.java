@@ -20,4 +20,9 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
 
     @Query("SELECT a FROM Article a WHERE a.user.id = :authorId")
     Page<Article> findArticlesByUserId(@Param("authorId") UUID authorId, Pageable pageable);
+
+    @Query("SELECT a FROM Article a WHERE a.user.id = :authorId AND a.status = :status")
+    Page<Article> findArticlesByUserIdAndStatus(@Param("authorId") UUID authorId,
+            @Param("status") ArticleStatus status,
+            Pageable pageable);
 }
