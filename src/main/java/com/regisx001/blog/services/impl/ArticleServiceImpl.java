@@ -187,7 +187,7 @@ public class ArticleServiceImpl implements ArticleService {
     private Article changeArticleStatus(UUID id, ArticleStatus status) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Article not found"));
-        article.setStatus(ArticleStatus.APPROVED);
+        article.setStatus(status);
         return article;
     }
 }
