@@ -95,11 +95,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<String> getCategoriesTitles() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(Category::getTitle)
-                .toList();
+    public Page<String> getCategoriesTitles(Pageable pageable) {
+        return categoryRepository.findAll(pageable)
+                .map(Category::getTitle);
     }
 
     @Override
@@ -109,6 +107,14 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         return categoryRepository.findArticlesByCategoryTitle(title, pageable).map(articleMapper::toDetailedDto);
+    }
+
+    @Override
+    public Page<String> searchCategoriesTitles(String searchTerm, Pageable pageable) {
+        if (searchTerm.isBlank() || searchTerm == null) {
+            throw new IllegalArgumentException("Search should not be empty");
+        }
+        return categoryRepository.searchCategories(searchTerm, pageable).map(Category::getTitle);
     }
 
 }

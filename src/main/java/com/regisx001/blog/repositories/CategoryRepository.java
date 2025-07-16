@@ -22,4 +22,9 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     @Query("SELECT a FROM Article a WHERE a.category.title = :categoryTitle ORDER BY a.createdAt DESC")
     Page<Article> findArticlesByCategoryTitle(@Param("categoryTitle") String categoryTitle, Pageable pageable);
+
+    @Query("SELECT c FROM Category c WHERE " +
+            "LOWER(c.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(c.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Category> searchCategories(@Param("searchTerm") String searchTerm, Pageable pageable);
 }
