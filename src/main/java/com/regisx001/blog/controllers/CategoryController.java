@@ -44,6 +44,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoriesTitles());
     }
 
+    @GetMapping("/titles/search/{searchTerm}")
+    public ResponseEntity<?> searchCategoriesTitles(@PathVariable String searchTerm, Pageable pageable) {
+        return ResponseEntity.ok(categoryService.searchCategoriesTitles(searchTerm, pageable));
+    }
+
     // @GetMapping("/{id}")
     // public ResponseEntity<CategoryDto.Detailed> getCategoryById(@PathVariable
     // UUID id) {

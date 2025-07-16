@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
+import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
+import com.regisx001.blog.domain.dto.ArticleDto.RejectionRequest;
 import com.regisx001.blog.domain.dto.ArticleDto.UpdateRequest;
 import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Category;
@@ -37,25 +39,43 @@ public class ArticleServiceImpl implements ArticleService {
     private final StorageService storageService;
 
     @Override
-    public Page<ArticleDto.Detailed> getAllArticles(Pageable pageable) {
-        return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
+    public Page<ArticleDto.Detailed> getPublishedArticles(Pageable pageable) {
+        return articleRepository.findArticlesByStatus(ArticleStatus.PUBLISHED, pageable)
+                .map(articleMapper::toDetailedDto);
     }
 
     @Override
     public ArticleDto.Detailed getArticleById(UUID id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
+        if (article.getStatus() != ArticleStatus.PUBLISHED) {
+            throw new ItemNotFoundException("Article Not found");
+        }
         return articleMapper.toDetailedDto(article);
+    }
+
+    @Override
+    public Page<Detailed> getArticlesByUser(UUID userId, Pageable pageable) {
+        return articleRepository.findArticlesByUserId(userId, pageable).map(articleMapper::toDetailedDto);
+    }
+
+    @Override
+    public Page<Detailed> getDraftArticlesByUser(UUID userId, Pageable pageable) {
+        return articleRepository.findArticlesByUserIdAndStatus(userId, ArticleStatus.DRAFT, pageable)
+                .map(articleMapper::toDetailedDto);
+    }
+
+    @Override
+    public Page<Detailed> searchArticles(String searchTerms, Pageable pageable) {
+        return articleRepository.searchPublishedArticles(searchTerms, pageable).map(articleMapper::toDetailedDto);
     }
 
     @Override
     public ArticleDto.Detailed createArticle(ArticleDto.CreateRequest request, UUID authorId) {
 
-        // 1. Validate author exists
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + authorId));
 
-        // 2. Validate and get category
         Category category = null;
         if (request.category() != null) {
             category = categoryRepository.findByTitle(request.category())
@@ -63,23 +83,8 @@ public class ArticleServiceImpl implements ArticleService {
                             () -> new IllegalArgumentException("Category not found with id: " + request.category()));
         }
 
-        // 3. Handle tags - create if they don't exist
         List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
-        // if (request.tags() != null && !request.tags().isEmpty()) {
-        // tags = request.tags().stream()
-        // .map(tagName -> {
-        // String cleanName = tagName.trim().toLowerCase();
-        // String slug = slugify(tagName);
 
-        // return tagRepository.findByName(cleanName).orElseGet(() -> {
-        // Tag newTag = Tag.builder().name(cleanName).slug(slug).build();
-        // return tagRepository.save(newTag);
-        // });
-        // })
-        // .collect(Collectors.toList());
-        // }
-
-        // 4. Create article entity from request
         Article article = articleMapper.toEntity(request);
 
         String imagePath = null;
@@ -126,14 +131,20 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDto.Detailed publishArticle(UUID id, UUID authorId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'publishArticle'");
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+        Article article = changeArticleStatus(id, ArticleStatus.PUBLISHED);
+        article.setIsPublished(true);
+        article.setPublishedAt(LocalDateTime.now());
+        return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
     public ArticleDto.Detailed unpublishArticle(UUID id, UUID authorId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'unpublishArticle'");
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+
+        Article article = changeArticleStatus(id, ArticleStatus.DRAFT);
+        article.setIsPublished(false);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
@@ -143,26 +154,57 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<ArticleDto.Summary> getPublishedArticles(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPublishedArticles'");
+    public Detailed sendForReview(UUID id, UUID authorId) {
+
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+
+        Article article = changeArticleStatus(id, ArticleStatus.PENDING_REVIEW);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
-    private String slugify(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return "";
-        }
+    @Override
+    public Detailed unsendForReview(UUID id, UUID authorId) {
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+        Article article = changeArticleStatus(id, ArticleStatus.DRAFT);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
 
-        return input.trim()
-                .toLowerCase()
-                .replaceAll("[^a-z0-9\\s-]", "") // Remove special characters except spaces and hyphens
-                .replaceAll("\\s+", "-") // Replace spaces with hyphens
-                .replaceAll("-+", "-") // Replace multiple hyphens with single hyphen
-                .replaceAll("^-|-$", ""); // Remove leading/trailing hyphens
+    @Override
+    public Detailed approveArticle(UUID id) {
+        // TODO: CHECK OWNERSHIP AND PERMISIONS
+        Article article = changeArticleStatus(id, ArticleStatus.APPROVED);
+        return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
+
+    @Override
+    public Detailed rejectArticle(UUID id, RejectionRequest rejectionRequest) {
+
+        Article article = changeArticleStatus(id, ArticleStatus.REJECTED);
+        article.setFeedback(rejectionRequest.feedback());
+        return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
     public void deleteArticlesInBatchById(Iterable<UUID> ids) {
         articleRepository.deleteAllByIdInBatch(ids);
     }
+
+    @Override
+    public Page<Detailed> getAllArticles(Pageable pageable) {
+        return articleRepository.findAll(pageable).map(articleMapper::toDetailedDto);
+    }
+
+    @Override
+    public Page<Detailed> getArticlesByStatus(ArticleStatus status, Pageable pageable) {
+
+        return articleRepository.findArticlesByStatus(status, pageable).map(articleMapper::toDetailedDto);
+    }
+
+    private Article changeArticleStatus(UUID id, ArticleStatus status) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        article.setStatus(status);
+        return article;
+    }
+
 }

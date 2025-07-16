@@ -19,6 +19,8 @@ public interface CategoryService {
 
     Category getCategoryById(UUID id);
 
+    Page<String> searchCategoriesTitles(String searchTerm, Pageable pageable);
+
     Page<ArticleDto.Detailed> getCategoryRelatedArticles(String title, Pageable pageable);
 
     Category getCategoryByTitle(String title);
