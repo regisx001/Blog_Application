@@ -13,7 +13,7 @@ import com.regisx001.blog.domain.entities.Category;;
 public interface CategoryService {
     Page<CategoryDto.Basic> getAllCategories(Pageable pageable);
 
-    Page<String> getCategoriesTitles(Pageable pageable);
+    List<String> getCategoriesTitles();
 
     Category createCategory(CategoryDto.CreateWithImageRequest categoryRequests);
 

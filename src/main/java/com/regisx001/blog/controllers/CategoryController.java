@@ -40,8 +40,8 @@ public class CategoryController {
     }
 
     @GetMapping("/titles")
-    public ResponseEntity<?> getAllCategoriesTitles(Pageable pageable) {
-        return ResponseEntity.ok(categoryService.getCategoriesTitles(pageable));
+    public ResponseEntity<?> getAllCategoriesTitles() {
+        return ResponseEntity.ok(categoryService.getCategoriesTitles());
     }
 
     @GetMapping("/titles/search/{searchTerm}")

@@ -95,9 +95,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<String> getCategoriesTitles(Pageable pageable) {
-        return categoryRepository.findAll(pageable)
-                .map(Category::getTitle);
+    public List<String> getCategoriesTitles() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(Category::getTitle).toList();
     }
 
     @Override
