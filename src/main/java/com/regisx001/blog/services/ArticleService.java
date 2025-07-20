@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
+import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
 
 public interface ArticleService {
@@ -15,6 +16,8 @@ public interface ArticleService {
     Page<ArticleDto.Detailed> getPublishedArticles(Pageable pageable);
 
     ArticleDto.Detailed getArticleById(UUID id);
+
+    ArticleDto.Detailed getArticleByIdAndUser(UUID id, User user);
 
     Page<ArticleDto.Detailed> getArticlesByUser(UUID userId, Pageable pageable);
 
