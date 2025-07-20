@@ -16,6 +16,7 @@ import com.regisx001.blog.domain.entities.Category;
 import com.regisx001.blog.domain.entities.Tag;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
+import com.regisx001.blog.exceptions.ArticleNotApprovedException;
 import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
@@ -131,10 +132,16 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDto.Detailed publishArticle(UUID id, UUID authorId) {
-        // TODO: CHECK OWNERSHIP AND PERMISIONS
-        Article article = changeArticleStatus(id, ArticleStatus.PUBLISHED);
-        article.setIsPublished(true);
-        article.setPublishedAt(LocalDateTime.now());
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
+
+        if (article.getStatus() == ArticleStatus.APPROVED) {
+            article = changeArticleStatus(id, ArticleStatus.PUBLISHED);
+            article.setIsPublished(true);
+            article.setPublishedAt(LocalDateTime.now());
+        } else {
+            throw new ArticleNotApprovedException("Article must be approved before publishing");
+        }
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
