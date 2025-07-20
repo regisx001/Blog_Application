@@ -35,8 +35,9 @@ public class ArticleAdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleDto.Detailed> getArticle(@PathVariable UUID id) {
-        return ResponseEntity.ok(articleService.getArticleById(id)); // Admin can see any article
+    public ResponseEntity<ArticleDto.Detailed> getArticle(@PathVariable UUID id,
+            @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.getArticleByIdAndUser(id, userDetails)); // Admin can see any article
     }
 
     @GetMapping("/status/{status}")

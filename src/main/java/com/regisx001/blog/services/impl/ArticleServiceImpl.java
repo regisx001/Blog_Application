@@ -49,7 +49,36 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleDto.Detailed getArticleById(UUID id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
-        if (article.getStatus() != ArticleStatus.PUBLISHED) {
+        // Check if user can access this article
+        boolean isPublished = article.getStatus() == ArticleStatus.PUBLISHED;
+        // boolean isAdmin = user != null && user.getRoles().stream()
+        // .anyMatch(role -> "ROLE_ADMIN".equals(role.getName().name()));
+
+        // Allow access if: article is published OR user is owner OR user is admin
+        if (!isPublished) {
+            throw new ItemNotFoundException("Article Not found");
+        }
+        return articleMapper.toDetailedDto(article);
+    }
+
+    @Override
+    public Detailed getArticleByIdAndUser(UUID id, User user) {
+        // TODO : FIX SOME WEIRD BUG HRER
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
+        // Check if user can access this article
+        boolean isPublished = article.getStatus() == ArticleStatus.PUBLISHED;
+        boolean isOwner = false;
+        boolean isAdmin = false;
+
+        if (user != null) {
+            isOwner = user.getId().equals(article.getUser().getId());
+            isAdmin = user != null && user.getRoles().stream()
+                    .anyMatch(role -> "ROLE_ADMIN".equals(role.getName().name()));
+        }
+
+        // Allow access if: article is published OR user is owner OR user is admin
+        if (!isPublished && !isAdmin && !isOwner) {
             throw new ItemNotFoundException("Article Not found");
         }
         return articleMapper.toDetailedDto(article);

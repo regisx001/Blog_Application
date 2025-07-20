@@ -58,8 +58,16 @@ public class ArticleController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getArticle(@PathVariable UUID id) {
-        return ResponseEntity.ok(articleService.getArticleById(id));
+    public ResponseEntity<?> getArticle(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+        // return ResponseEntity.ok(articleService.getArticleById(id));
+        return ResponseEntity.ok(articleService.getArticleByIdAndUser(id, user));
+
+    }
+
+    // TODO: FIX AND MERGE THIS WITH THE ONE ABOVE
+    @GetMapping(path = "/id-user/{id}")
+    public ResponseEntity<?> getArticleByIdAndUser(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(articleService.getArticleByIdAndUser(id, user));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
