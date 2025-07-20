@@ -267,6 +267,19 @@ public class GlobalExceptionHandler {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
 
+        @ExceptionHandler(ArticleNotApprovedException.class)
+        public ResponseEntity<ApiErrorResponse> handleArticleNotApprovedException(
+                        ArticleNotApprovedException ex, WebRequest request) {
+
+                ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+                                .status(HttpStatus.UNAUTHORIZED.value())
+                                .message(ex.getMessage())
+                                .errors(null)
+                                .build();
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
         // ============= CATCH-ALL EXCEPTION =============
 
         @ExceptionHandler(Exception.class)

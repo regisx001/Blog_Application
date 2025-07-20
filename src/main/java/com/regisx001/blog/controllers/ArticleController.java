@@ -17,13 +17,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/api/v1/articles")
@@ -34,7 +34,27 @@ public class ArticleController {
 
     @GetMapping
     public ResponseEntity<Page<ArticleDto.Detailed>> getAllArticles(Pageable pageable) {
-        return ResponseEntity.ok(articleService.getAllArticles(pageable));
+        return ResponseEntity.ok(articleService.getPublishedArticles(pageable));
+    }
+
+    @GetMapping(path = "/search/{searchTerms}")
+    public ResponseEntity<Page<ArticleDto.Detailed>> searchArticles(@PathVariable String searchTerms,
+            Pageable pageable) {
+        return ResponseEntity.ok(articleService.searchArticles(searchTerms, pageable));
+    }
+
+    @GetMapping(path = "/my-articles")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<ArticleDto.Detailed>> getArticlesByUser(Pageable pageable,
+            @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.getArticlesByUser(userDetails.getId(), pageable));
+    }
+
+    @GetMapping(path = "/my-drafts")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<ArticleDto.Detailed>> getDraftArticlesByUser(Pageable pageable,
+            @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.getDraftArticlesByUser(userDetails.getId(), pageable));
     }
 
     @GetMapping(path = "/{id}")
@@ -61,5 +81,34 @@ public class ArticleController {
             @ModelAttribute ArticleDto.DeleteInBatchRequest deleteInBatchRequest) {
         articleService.deleteArticlesInBatchById(deleteInBatchRequest.ids());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/send-review/{id}")
+    public ResponseEntity<?> sendArticleForReview(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.sendForReview(id, userDetails.getId()));
+    }
+
+    @PostMapping("/unsend-review/{id}")
+    public ResponseEntity<?> unsendArticleForReview(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.unsendForReview(id, userDetails.getId()));
+    }
+
+    @PostMapping("/publish/{id}")
+    public ResponseEntity<?> publishArticle(@PathVariable UUID id,
+            @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.publishArticle(id,
+                userDetails.getId()));
+    }
+
+    @PostMapping("/unpublish/{id}")
+    public ResponseEntity<?> unpublishArticle(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.unpublishArticle(id, userDetails.getId()));
+    }
+
+    // ==================== ADMINS-ENDPOINTS ======================
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(path = "/admin")
+    public ResponseEntity<Page<ArticleDto.Detailed>> getAllArticlesAdmins(Pageable pageable) {
+        return ResponseEntity.ok(articleService.getAllArticles(pageable));
     }
 }
