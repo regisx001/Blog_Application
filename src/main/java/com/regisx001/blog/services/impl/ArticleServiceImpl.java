@@ -170,9 +170,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Detailed approveArticle(UUID id) {
+    public Detailed approveArticle(UUID id, ArticleDto.ApproveRequest approveRequest) {
         // TODO: CHECK OWNERSHIP AND PERMISIONS
         Article article = changeArticleStatus(id, ArticleStatus.APPROVED);
+        article.setFeedback(approveRequest.feedback());
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
@@ -180,6 +181,7 @@ public class ArticleServiceImpl implements ArticleService {
     public Detailed rejectArticle(UUID id, RejectionRequest rejectionRequest) {
 
         Article article = changeArticleStatus(id, ArticleStatus.REJECTED);
+
         article.setFeedback(rejectionRequest.feedback());
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
@@ -203,6 +205,9 @@ public class ArticleServiceImpl implements ArticleService {
     private Article changeArticleStatus(UUID id, ArticleStatus status) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Article not found"));
+        if (article.getStatus() == status) {
+            return article;
+        }
         article.setStatus(status);
         return article;
     }

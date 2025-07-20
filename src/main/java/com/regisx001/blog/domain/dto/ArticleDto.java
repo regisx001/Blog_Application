@@ -59,7 +59,7 @@ public class ArticleDto {
         public record CreateRequest(
                         @NotBlank(message = "Title is required") @Size(min = 5, max = 200, message = "Title must be between 5 and 200 characters") String title,
 
-                        @NotBlank(message = "Content is required") @Size(min = 5, message = "Content must be at least 50 characters") String content,
+                        @NotBlank(message = "Content is required") @Size(min = 5, message = "Content must be at least 5 characters") String content,
 
                         String category,
 
@@ -116,6 +116,10 @@ public class ArticleDto {
 
         public record DeleteInBatchRequest(
                         List<UUID> ids) {
+        }
+
+        public record ApproveRequest(
+                        String feedback) {
         }
 
         public record RejectionRequest(

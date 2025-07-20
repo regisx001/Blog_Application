@@ -31,7 +31,7 @@ spring:
 security:
   jwt:
     key: 9950d5009b26fb01ee90ca6c8ba8fb165173c003b6d49fc9ff9a8852033e93b9s
-    expiration-time: 3600000
+    expiration-time: 3600000000
     refresh-token:
       expiration-ms: 7776000000
 
