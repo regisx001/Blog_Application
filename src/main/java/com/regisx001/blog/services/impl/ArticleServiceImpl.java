@@ -131,7 +131,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setFeaturedImage(imagePath);
         article.setCategory(category);
         article.setTags(tags);
-        article.setStatus(ArticleStatus.DRAFT);
+        if (request.draft() != null && request.draft() == true) {
+            article.setStatus(ArticleStatus.DRAFT);
+        } else {
+            article.setStatus(ArticleStatus.PENDING_REVIEW);
+        }
 
         // 6. Set default values
         article.setIsPublished(request.isPublished() != null ? request.isPublished() : false);
