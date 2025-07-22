@@ -277,4 +277,10 @@ public class ArticleServiceImpl implements ArticleService {
         article.setIsPublished(false);
         return article;
     }
+
+    @Override
+    public Page<Detailed> getReviewArticlesByUser(UUID userId, Pageable pageable) {
+        return articleRepository.findArticlesSubmittedForReviewByUser(userId, pageable)
+                .map(articleMapper::toDetailedDto);
+    }
 }

@@ -37,6 +37,10 @@ public class ArticleDto {
                         LocalDateTime publishedAt,
                         LocalDateTime createdAt,
                         LocalDateTime updatedAt,
+                        LocalDateTime rejectedAt,
+                        String rejectedBy,
+                        LocalDateTime approvedAt,
+                        String approvedBy,
                         UserDto.Basic author,
                         CategoryDto.Basic category,
                         List<String> tags) {
