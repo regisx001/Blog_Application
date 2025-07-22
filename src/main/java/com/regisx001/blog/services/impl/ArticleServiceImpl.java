@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
@@ -131,7 +132,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setFeaturedImage(imagePath);
         article.setCategory(category);
         article.setTags(tags);
-        article.setStatus(ArticleStatus.DRAFT);
+        if (request.draft() != null && request.draft() == true) {
+            article.setStatus(ArticleStatus.DRAFT);
+        } else {
+            article.setStatus(ArticleStatus.PENDING_REVIEW);
+        }
 
         // 6. Set default values
         article.setIsPublished(request.isPublished() != null ? request.isPublished() : false);
@@ -206,18 +211,37 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Detailed approveArticle(UUID id, ArticleDto.ApproveRequest approveRequest) {
-        // TODO: CHECK OWNERSHIP AND PERMISIONS
+    public Detailed approveArticle(UUID id, ArticleDto.ApproveRequest approveRequest, User adminUser) {
+        boolean isAdmin = adminUser != null && adminUser.getRoles().stream()
+                .anyMatch(role -> "ROLE_ADMIN".equals(role.getName().name()));
+
+        if (!isAdmin) {
+            throw new AccessDeniedException("You not allowed to access this endpoint");
+        }
+
         Article article = changeArticleStatus(id, ArticleStatus.APPROVED);
+        article.setApprovedAt(LocalDateTime.now());
+        if (adminUser != null) {
+            article.setApprovedBy(adminUser.getUsername());
+        }
         article.setFeedback(approveRequest.feedback());
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
 
     @Override
-    public Detailed rejectArticle(UUID id, RejectionRequest rejectionRequest) {
+    public Detailed rejectArticle(UUID id, RejectionRequest rejectionRequest, User adminUser) {
+        boolean isAdmin = adminUser != null && adminUser.getRoles().stream()
+                .anyMatch(role -> "ROLE_ADMIN".equals(role.getName().name()));
+
+        if (!isAdmin) {
+            throw new AccessDeniedException("You not allowed to access this endpoint");
+        }
 
         Article article = changeArticleStatus(id, ArticleStatus.REJECTED);
-
+        article.setRejectedAt(LocalDateTime.now());
+        if (adminUser != null) {
+            article.setRejectedBy(adminUser.getUsername());
+        }
         article.setFeedback(rejectionRequest.feedback());
         return articleMapper.toDetailedDto(articleRepository.save(article));
     }
@@ -245,7 +269,12 @@ public class ArticleServiceImpl implements ArticleService {
             return article;
         }
         article.setStatus(status);
+        article.setApprovedAt(null);
+        article.setApprovedBy(null);
+        article.setRejectedAt(null);
+        article.setRejectedBy(null);
+        article.setPublishedAt(null);
+        article.setIsPublished(false);
         return article;
     }
-
 }

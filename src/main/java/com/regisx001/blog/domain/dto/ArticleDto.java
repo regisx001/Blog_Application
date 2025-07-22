@@ -63,6 +63,8 @@ public class ArticleDto {
 
                         String category,
 
+                        Boolean draft,
+
                         List<String> tags,
 
                         // ArticleStatus status,
