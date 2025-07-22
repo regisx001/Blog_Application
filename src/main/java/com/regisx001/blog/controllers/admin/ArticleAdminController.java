@@ -53,14 +53,15 @@ public class ArticleAdminController {
 
     @PostMapping(path = "/approve/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ArticleDto.Detailed> approveArticle(@PathVariable UUID id,
-            @ModelAttribute ArticleDto.ApproveRequest approveRequest) {
-        return ResponseEntity.ok(articleService.approveArticle(id, approveRequest));
+            @ModelAttribute ArticleDto.ApproveRequest approveRequest, @AuthenticationPrincipal User adminUser) {
+        return ResponseEntity.ok(articleService.approveArticle(id, approveRequest, adminUser));
     }
 
     @PostMapping(path = "/reject/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ArticleDto.Detailed> rejectArticle(
-            @PathVariable UUID id, @ModelAttribute ArticleDto.RejectionRequest rejectionRequest) {
-        return ResponseEntity.ok(articleService.rejectArticle(id, rejectionRequest));
+            @PathVariable UUID id, @ModelAttribute ArticleDto.RejectionRequest rejectionRequest,
+            @AuthenticationPrincipal User adminUser) {
+        return ResponseEntity.ok(articleService.rejectArticle(id, rejectionRequest, adminUser));
     }
 
     @PostMapping("/publish/{id}")

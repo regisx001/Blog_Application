@@ -73,6 +73,12 @@ public class Article {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    private LocalDateTime rejectedAt;
+    private String rejectedBy;
+
+    private LocalDateTime approvedAt;
+    private String approvedBy;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", nullable = false)
     private User user;

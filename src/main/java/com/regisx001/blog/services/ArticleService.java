@@ -44,9 +44,9 @@ public interface ArticleService {
 
     ArticleDto.Detailed unpublishArticle(UUID id, UUID authorId);
 
-    ArticleDto.Detailed approveArticle(UUID id, ArticleDto.ApproveRequest approveRequest);
+    ArticleDto.Detailed approveArticle(UUID id, ArticleDto.ApproveRequest approveRequest, User adminUser);
 
-    ArticleDto.Detailed rejectArticle(UUID id, ArticleDto.RejectionRequest rejectionRequest);
+    ArticleDto.Detailed rejectArticle(UUID id, ArticleDto.RejectionRequest rejectionRequest, User adminUser);
 
     // ============= USER-SPECIFIC OPERATIONS =============
 
