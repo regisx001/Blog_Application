@@ -28,6 +28,14 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+  ai:
+    openai:
+      api-key: ${GROQ_API_KEY}
+      base-url: ${GROQ_BASE_URL}
+      chat:
+        options:
+          model: ${GROQ_MODEL}
+
 security:
   jwt:
     key: 9950d5009b26fb01ee90ca6c8ba8fb165173c003b6d49fc9ff9a8852033e93b9s

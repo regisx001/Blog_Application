@@ -65,6 +65,7 @@ public class Article {
 
     private LocalDateTime publishedAt;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String feedback;
 
     @Column(nullable = false)

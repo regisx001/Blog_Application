@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.stringtemplate.v4.compiler.CodeGenerator.primary_return;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
@@ -23,6 +24,7 @@ import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.repositories.UserRepository;
+import com.regisx001.blog.services.AiService;
 import com.regisx001.blog.services.ArticleService;
 import com.regisx001.blog.services.StorageService;
 import com.regisx001.blog.services.TagService;
@@ -39,6 +41,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final TagService tagService;
     private final ArticleMapper articleMapper;
     private final StorageService storageService;
+    private final AiService aiService;
 
     @Override
     public Page<ArticleDto.Detailed> getPublishedArticles(Pageable pageable) {
@@ -117,6 +120,13 @@ public class ArticleServiceImpl implements ArticleService {
         List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
 
         Article article = articleMapper.toEntity(request);
+        // ---------------- SIMPLE IMPLEMENTATION
+        // String prompt = "analyse this content and give a feedback is less than 100
+        // charachter without any introduction, "
+        // + article.getContent();
+        // String feedback = aiService.chat(prompt);
+
+        // article.setFeedback(feedback);
 
         String imagePath = null;
         if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
