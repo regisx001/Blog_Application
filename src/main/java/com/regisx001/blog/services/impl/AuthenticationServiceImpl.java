@@ -102,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void verifyUser(VerifyUserRequest verifyUserRequest) {
         Optional<User> userToVerify = userRepository.findByEmail(verifyUserRequest.getEmail());
-        if (!userToVerify.isPresent()) {
+        if (userToVerify.isEmpty()) {
             throw new UsernameNotFoundException("Account not found");
         }
 
@@ -127,7 +127,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void resendVerificationCode(String email) {
 
         Optional<User> userToVerify = userRepository.findByEmail(email);
-        if (!userToVerify.isPresent()) {
+        if (userToVerify.isEmpty()) {
             throw new UsernameNotFoundException("Account not found");
         }
 

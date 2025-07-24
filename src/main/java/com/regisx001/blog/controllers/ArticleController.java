@@ -113,6 +113,11 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.unpublishArticle(id, userDetails.getId()));
     }
 
+    @GetMapping(path = "/for-review")
+    public ResponseEntity<?> getReviewedArticlesByUser(@AuthenticationPrincipal User user, Pageable pageable) {
+        return ResponseEntity.ok(articleService.getReviewArticlesByUser(user.getId(), pageable));
+    }
+
     // ==================== ADMINS-ENDPOINTS ======================
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/admin")

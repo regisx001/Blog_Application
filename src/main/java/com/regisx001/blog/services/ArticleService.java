@@ -21,6 +21,8 @@ public interface ArticleService {
 
     Page<ArticleDto.Detailed> getArticlesByUser(UUID userId, Pageable pageable);
 
+    Page<ArticleDto.Detailed> getReviewArticlesByUser(UUID userId, Pageable pageable);
+
     Page<ArticleDto.Detailed> getDraftArticlesByUser(UUID userId, Pageable pageable);
 
     Page<ArticleDto.Detailed> searchArticles(String searchTerms, Pageable pageable);

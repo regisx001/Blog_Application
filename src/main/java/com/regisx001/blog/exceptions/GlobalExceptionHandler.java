@@ -41,8 +41,8 @@ public class GlobalExceptionHandler {
                 List<ApiErrorResponse.FieldError> fieldErrors = new ArrayList<>();
 
                 ex.getBindingResult().getAllErrors().forEach((error) -> {
-                        if (error instanceof FieldError) {
-                                String fieldName = ((FieldError) error).getField();
+                        if (error instanceof FieldError fieldError) {
+                                String fieldName = fieldError.getField();
                                 String errorMessage = error.getDefaultMessage();
                                 fieldErrors.add(ApiErrorResponse.FieldError.builder()
                                                 .field(fieldName)
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
 
                 Class<?> requiredType = ex.getRequiredType();
                 String expectedType = (requiredType != null) ? requiredType.getSimpleName() : "unknown";
-                String message = String.format("Invalid value '%s' for parameter '%s'. Expected: %s",
+                String message = "Invalid value '%s' for parameter '%s'. Expected: %s".formatted(
                                 ex.getValue(), ex.getName(), expectedType);
 
                 ApiErrorResponse errorResponse = ApiErrorResponse.builder()
@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
 
                 log.error("Missing parameter error: {}", ex.getMessage());
 
-                String message = String.format("Required parameter '%s' is missing", ex.getParameterName());
+                String message = "Required parameter '%s' is missing".formatted(ex.getParameterName());
 
                 ApiErrorResponse errorResponse = ApiErrorResponse.builder()
                                 .status(HttpStatus.BAD_REQUEST.value())

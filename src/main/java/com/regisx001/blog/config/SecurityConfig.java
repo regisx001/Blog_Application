@@ -32,7 +32,7 @@ public class SecurityConfig {
         private final AccountVerificationFilter accountVerificationFilter;
 
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
                                 .cors(Customizer.withDefaults())
                                 .csrf(csrf -> csrf
@@ -71,7 +71,7 @@ public class SecurityConfig {
         // }
 
         @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOrigins(
                                 List.of("http://localhost:8080", "http://localhost:4200", "http://localhost:5173"));
