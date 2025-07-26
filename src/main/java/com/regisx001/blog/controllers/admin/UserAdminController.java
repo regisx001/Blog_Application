@@ -3,6 +3,7 @@ package com.regisx001.blog.controllers.admin;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.responses.SuccessResponse;
+import com.regisx001.blog.domain.entities.RoleType;
 import com.regisx001.blog.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,8 +32,18 @@ public class UserAdminController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page<UserDto.Detailed>> getAllUsers(Pageable pageable) {
-        Page<UserDto.Detailed> users = userService.getAllUsers(pageable);
+    public ResponseEntity<Page<UserDto.Detailed>> getAllUsers(
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Boolean enabled, Pageable pageable) {
+        RoleType roleType = null;
+        if (role != null) {
+            try {
+                roleType = RoleType.valueOf(role); // Convert String to RoleType enum
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid role: " + role);
+            }
+        }
+        Page<UserDto.Detailed> users = userService.getAllUsersByFilters(pageable, roleType, enabled);
         return ResponseEntity.ok(users);
     }
 

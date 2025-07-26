@@ -1,8 +1,10 @@
 package com.regisx001.blog.services.impl;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.dto.UserDto.Detailed;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.Role;
+import com.regisx001.blog.domain.entities.RoleType;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.UserMapper;
@@ -86,6 +88,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ItemNotFoundException("User not found"));
         user.setEnabled(enable);
         userRepository.save(user);
+    }
+
+    @Override
+    public Page<Detailed> getAllUsersByFilters(Pageable pageable, RoleType role, Boolean enabled) {
+        return userRepository.findAllByRoleAndEnabled(role, enabled, pageable).map(userMapper::toDetailedDto);
     }
 
 }

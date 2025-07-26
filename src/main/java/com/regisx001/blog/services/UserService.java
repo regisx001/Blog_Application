@@ -2,6 +2,7 @@ package com.regisx001.blog.services;
 
 import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
+import com.regisx001.blog.domain.entities.RoleType;
 import com.regisx001.blog.domain.entities.User;
 
 import java.util.Set;
@@ -13,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     public Page<UserDto.Detailed> getAllUsers(Pageable pageable);
+
+    public Page<UserDto.Detailed> getAllUsersByFilters(Pageable pageable, RoleType role, Boolean enabled);
 
     User findByUsername(String username);
 
