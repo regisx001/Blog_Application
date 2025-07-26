@@ -1,7 +1,6 @@
 package com.regisx001.blog.services;
 
 import com.regisx001.blog.domain.dto.UserDto;
-import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.User;
 
@@ -22,4 +21,6 @@ public interface UserService {
     User uploadAvatar(UUID userId, MultipartFile file);
 
     User updateUser(UUID userId, UpdateUserRequest updateUserRequest);
+
+    void changeEnable(UUID userId, boolean enable);
 }

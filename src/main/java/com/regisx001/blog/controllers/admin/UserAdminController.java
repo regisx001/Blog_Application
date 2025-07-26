@@ -51,4 +51,21 @@ public class UserAdminController {
                 .message("User upgraded to USER successfully").build();
         return new ResponseEntity<SuccessResponse>(response, null, 200);
     }
+
+    @PostMapping(path = "/disable-user/{id}")
+    public ResponseEntity<SuccessResponse> disableUserAccount(@PathVariable UUID id) {
+        userService.changeEnable(id, false);
+        SuccessResponse response = SuccessResponse.builder().statusCode(200)
+                .message("User disabled successfully").build();
+        return new ResponseEntity<SuccessResponse>(response, null, 200);
+    }
+
+    @PostMapping(path = "/enable-user/{id}")
+    public ResponseEntity<SuccessResponse> enableUserAccount(@PathVariable UUID id) {
+        userService.changeEnable(id, true);
+
+        SuccessResponse response = SuccessResponse.builder().statusCode(200)
+                .message("User enabled successfully").build();
+        return new ResponseEntity<SuccessResponse>(response, null, 200);
+    }
 }
