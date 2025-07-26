@@ -1,9 +1,12 @@
 package com.regisx001.blog.services.impl;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.dto.UserDto.Detailed;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.Role;
+import com.regisx001.blog.domain.entities.RoleType;
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.exceptions.ItemNotFoundException;
 import com.regisx001.blog.mappers.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void upgradeUserAdmin(UUID userid, Set<String> roleNames) {
+    public void changeUserRoles(UUID userid, Set<String> roleNames) {
         User user = userRepository.findById(userid)
                 .orElseThrow(() -> new UsernameNotFoundException("User with giving Id not found"));
         Set<Role> roles = roleRepository.findByNameIn(roleNames);
@@ -56,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User uploadAvatar(UUID userId, MultipartFile file) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ItemNotFoundException("User not found"));
         String avatarFileName = storageService.store(file);
         user.setAvatar(avatarFileName);
         return userRepository.save(user);
@@ -65,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(UUID userId, UpdateUserRequest updateUserRequest) {
         if (userRepository.findByUsername(updateUserRequest.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already in use");
+            throw new ItemNotFoundException("Username already in use");
         }
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -78,6 +81,20 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
+
+    @Override
+    public void changeEnable(UUID userId, boolean enable) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ItemNotFoundException("User not found"));
+        user.setEnabled(enable);
+        userRepository.save(user);
+    }
+
+    @Override
+    public Page<Detailed> getAllUsersByFilters(String searchTermsn, RoleType role, Boolean enabled, Pageable pageable) {
+        String roleString = role != null ? role.name() : null;
+        return userRepository.findAllBySearchAndRoleAndEnabled(searchTermsn, roleString, enabled, pageable)
+                .map(userMapper::toDetailedDto);
     }
 
 }
