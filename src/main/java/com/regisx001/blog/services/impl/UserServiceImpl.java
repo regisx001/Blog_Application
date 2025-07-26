@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void upgradeUserAdmin(UUID userid, Set<String> roleNames) {
+    public void changeUserRoles(UUID userid, Set<String> roleNames) {
         User user = userRepository.findById(userid)
                 .orElseThrow(() -> new UsernameNotFoundException("User with giving Id not found"));
         Set<Role> roles = roleRepository.findByNameIn(roleNames);

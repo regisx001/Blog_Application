@@ -17,7 +17,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    public void upgradeUserAdmin(UUID userid, Set<String> rolesName);
+    public void changeUserRoles(UUID userid, Set<String> rolesName);
 
     User uploadAvatar(UUID userId, MultipartFile file);
 
