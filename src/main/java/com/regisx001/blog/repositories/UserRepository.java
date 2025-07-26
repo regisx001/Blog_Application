@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.domain.entities.RoleType;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
@@ -39,7 +40,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
                         "AND (:enabled IS NULL OR u.enabled = :enabled)")
         Page<User> findAllBySearchAndRoleAndEnabled(
                         @Param("searchTerm") String searchTerm,
-                        @Param("role") String role,
+                        @Param("role") RoleType role,
                         @Param("enabled") Boolean enabled,
                         Pageable pageable);
 
