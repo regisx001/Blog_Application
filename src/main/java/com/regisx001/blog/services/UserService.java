@@ -27,4 +27,5 @@ public interface UserService {
     User updateUser(UUID userId, UpdateUserRequest updateUserRequest);
 
     void changeEnable(UUID userId, boolean enable);
+
 }

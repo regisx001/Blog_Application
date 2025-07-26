@@ -1,7 +1,10 @@
 package com.regisx001.blog.controllers.admin;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.regisx001.blog.domain.dto.UserDto;
 import com.regisx001.blog.domain.dto.responses.SuccessResponse;
 import com.regisx001.blog.domain.entities.RoleType;
+import com.regisx001.blog.domain.entities.User;
+import com.regisx001.blog.repositories.UserRepository;
 import com.regisx001.blog.services.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class UserAdminController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @GetMapping
     public ResponseEntity<Page<UserDto.Detailed>> getAllUsers(
@@ -81,4 +89,26 @@ public class UserAdminController {
                 .message("User enabled successfully").build();
         return new ResponseEntity<SuccessResponse>(response, null, 200);
     }
+
+    @Transactional
+    @GetMapping("/export")
+    public void exportUsersToCsv(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=users.csv");
+
+        PrintWriter writer = response.getWriter();
+        writer.println("id,username,email,enabled,createdAt,updatedAt");
+
+        try (Stream<User> userStream = userRepository.streamAll()) {
+            userStream.forEach(user -> writer.printf("%s,%s,%s,%b,%s,%s\n",
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.isEnabled(),
+                    user.getCreatedAt(),
+                    user.getUpdatedAt()));
+        }
+        writer.flush();
+    }
+
 }
