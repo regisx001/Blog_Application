@@ -3,7 +3,6 @@ package com.regisx001.blog.controllers.admin;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class UserAdminController {
 
     @GetMapping
     public ResponseEntity<Page<UserDto.Detailed>> getAllUsers(
-            @RequestParam(required = false) String searchTerms,
+            @RequestParam(required = false) String searchTerm,
             @RequestParam(required = false) String role,
             @RequestParam(required = false) Boolean enabled, Pageable pageable) {
         RoleType roleType = null;
@@ -44,7 +43,7 @@ public class UserAdminController {
                 throw new RuntimeException("Invalid role: " + role);
             }
         }
-        Page<UserDto.Detailed> users = userService.getAllUsersByFilters(searchTerms, roleType, enabled, pageable);
+        Page<UserDto.Detailed> users = userService.getAllUsersByFilters(searchTerm, roleType, enabled, pageable);
         return ResponseEntity.ok(users);
     }
 
