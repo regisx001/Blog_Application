@@ -19,10 +19,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
         Optional<User> findByUsername(String username);
 
-        @Query("SELECT u FROM User u JOIN u.roles r WHERE " +
+        @Query("SELECT DISTINCT u FROM User u JOIN u.roles r WHERE " +
+                        "(:searchTerm IS NULL OR UPPER(u.username) LIKE UPPER(CONCAT('%', :searchTerm, '%'))) AND " +
                         "(:role IS NULL OR r.name = :role) AND " +
                         "(:enabled IS NULL OR u.enabled = :enabled)")
-        Page<User> findAllByRoleAndEnabled(@Param("role") RoleType role,
+        Page<User> findAllBySearchAndRoleAndEnabled(
+                        @Param("searchTerm") String searchTerm,
+                        @Param("role") RoleType role,
                         @Param("enabled") Boolean enabled,
                         Pageable pageable);
 

@@ -15,7 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserService {
     public Page<UserDto.Detailed> getAllUsers(Pageable pageable);
 
-    public Page<UserDto.Detailed> getAllUsersByFilters(Pageable pageable, RoleType role, Boolean enabled);
+    public Page<UserDto.Detailed> getAllUsersByFilters(String searchTermsn, RoleType role, Boolean enabled,
+            Pageable pageable);
 
     User findByUsername(String username);
 

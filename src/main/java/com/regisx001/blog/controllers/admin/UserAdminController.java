@@ -33,6 +33,7 @@ public class UserAdminController {
 
     @GetMapping
     public ResponseEntity<Page<UserDto.Detailed>> getAllUsers(
+            @RequestParam(required = false) String searchTerms,
             @RequestParam(required = false) String role,
             @RequestParam(required = false) Boolean enabled, Pageable pageable) {
         RoleType roleType = null;
@@ -43,7 +44,7 @@ public class UserAdminController {
                 throw new RuntimeException("Invalid role: " + role);
             }
         }
-        Page<UserDto.Detailed> users = userService.getAllUsersByFilters(pageable, roleType, enabled);
+        Page<UserDto.Detailed> users = userService.getAllUsersByFilters(searchTerms, roleType, enabled, pageable);
         return ResponseEntity.ok(users);
     }
 
