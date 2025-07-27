@@ -2,6 +2,7 @@ package com.regisx001.blog.repositories;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,18 +20,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
         Optional<User> findByUsername(String username);
 
-        // @Query(value = "SELECT DISTINCT u.* FROM users u " +
-        // "JOIN user_roles ur ON u.id = ur.user_id " +
-        // "JOIN roles r ON r.id = ur.role_id " +
-        // "WHERE (:searchTerm IS NULL OR u.username ILIKE CONCAT('%', CAST(:searchTerm
-        // AS text), '%')) " +
-        // "AND (:role IS NULL OR r.name = CAST(:role AS text)) " +
-        // "AND (:enabled IS NULL OR u.enabled = :enabled)", nativeQuery = true)
-        // Page<User> findAllBySearchAndRoleAndEnabled(
-        // @Param("searchTerm") String searchTerm,
-        // @Param("role") String role,
-        // @Param("enabled") Boolean enabled,
-        // Pageable pageable);
+        @Query("SELECT u FROM User u")
+        Stream<User> streamAll();
 
         @Query("SELECT DISTINCT u FROM User u " +
                         "JOIN u.roles r " +
