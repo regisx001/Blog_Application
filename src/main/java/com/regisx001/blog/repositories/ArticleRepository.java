@@ -2,6 +2,7 @@ package com.regisx001.blog.repositories;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +58,8 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
                         "LOWER(a.content) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
         Page<Article> searchPublishedArticles(@Param("searchTerm") String searchTerm, Pageable pageable);
 
+        @Query("SELECT a FROM Article a")
+        Stream<Article> streamAll();
         // ============= SEARCH FUNCTIONALITY =============
 
         // TODO: AI GENERATED UNDERSTAND LATER

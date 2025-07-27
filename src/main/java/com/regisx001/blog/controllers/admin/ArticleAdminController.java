@@ -1,6 +1,9 @@
 package com.regisx001.blog.controllers.admin;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
+import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
+import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.services.ArticleService;
 
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @PreAuthorize("hasRole('ADMIN')")
 public class ArticleAdminController {
     private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
 
     @GetMapping
     public ResponseEntity<Page<ArticleDto.Detailed>> getAllArticles(
@@ -87,4 +95,30 @@ public class ArticleAdminController {
         return ResponseEntity.ok(articleService.unpublishArticle(id, userDetails.getId()));
     }
 
+    @Transactional
+    @GetMapping("/export")
+    public void exportArticlesToCsv(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=articles.csv");
+
+        PrintWriter writer = response.getWriter();
+        writer.println("id,title,content,status,isPublished,publishedAt,createdAt,updatedAt,authorId,categoryId");
+
+        try (Stream<Article> articleStream = articleRepository.streamAll()) {
+            articleStream.forEach(article -> writer.printf("%s,%s,%s,%s,%b,%s,%s,%s,%s,%s\n",
+                    article.getId(),
+                    article.getTitle(),
+                    article.getContent().replaceAll("\n", " ").replaceAll(",", " "),
+
+                    article.getStatus(),
+                    article.getIsPublished(),
+                    article.getPublishedAt(),
+                    article.getCreatedAt(),
+                    article.getUpdatedAt(),
+                    article.getUser() != null ? article.getUser().getId() : "",
+                    article.getCategory() != null ? article.getCategory().getId() : ""));
+        }
+
+        writer.flush();
+    }
 }
