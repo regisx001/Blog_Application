@@ -31,6 +31,16 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
         Page<Article> findArticlesSubmittedForReviewByUser(@Param("authorId") UUID authorId,
                         Pageable pageable);
 
+        @Query("SELECT DISTINCT a FROM Article a " +
+                        "WHERE (:searchTerm IS NULL OR :searchTerm = '' OR " +
+                        "LOWER(a.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+                        "LOWER(a.content) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
+                        "AND (:status IS NULL OR a.status = :status)")
+        Page<Article> findAllBySearchAndStatus(
+                        @Param("searchTerm") String searchTerm,
+                        @Param("status") ArticleStatus status,
+                        Pageable pageable);
+
         // @Query("SELECT a FROM Article a WHERE a.user.id = :authorId AND a.status IN
         // (APPROVED, PENDING, REJECTED)")
         // Page<Article> findArticlesSubmittedForReviewByUser(@Param("authorId") UUID
@@ -109,4 +119,5 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
                         "LOWER(a.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
                         "ORDER BY a.title")
         List<String> getSearchSuggestions(@Param("searchTerm") String searchTerm);
+
 }

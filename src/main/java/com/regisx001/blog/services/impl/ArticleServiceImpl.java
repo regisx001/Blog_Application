@@ -283,4 +283,10 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findArticlesSubmittedForReviewByUser(userId, pageable)
                 .map(articleMapper::toDetailedDto);
     }
+
+    @Override
+    public Page<Detailed> getAllArticlesByFilters(String searchTerm, ArticleStatus status, Pageable pageable) {
+        return articleRepository.findAllBySearchAndStatus(searchTerm, status, pageable)
+                .map(articleMapper::toDetailedDto);
+    }
 }

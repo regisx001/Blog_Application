@@ -58,6 +58,8 @@ public interface ArticleService {
 
     Page<ArticleDto.Detailed> getAllArticles(Pageable pageable);
 
+    Page<ArticleDto.Detailed> getAllArticlesByFilters(String searchTerm, ArticleStatus status, Pageable pageable);
+
     Page<ArticleDto.Detailed> getArticlesByStatus(ArticleStatus status, Pageable pageable);
 
 }

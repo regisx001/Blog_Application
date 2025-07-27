@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
@@ -30,8 +31,20 @@ public class ArticleAdminController {
     private final ArticleService articleService;
 
     @GetMapping
-    public ResponseEntity<Page<ArticleDto.Detailed>> getAllArticles(Pageable pageable) {
-        return ResponseEntity.ok(articleService.getAllArticles(pageable));
+    public ResponseEntity<Page<ArticleDto.Detailed>> getAllArticles(
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String status,
+            Pageable pageable) {
+
+        ArticleStatus articleStatus = null;
+        if (status != null) {
+            try {
+                articleStatus = ArticleStatus.valueOf(status); // Convert String to RoleType enum
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid role: " + status);
+            }
+        }
+        return ResponseEntity.ok(articleService.getAllArticlesByFilters(searchTerm, articleStatus, pageable));
     }
 
     @GetMapping("/{id}")
