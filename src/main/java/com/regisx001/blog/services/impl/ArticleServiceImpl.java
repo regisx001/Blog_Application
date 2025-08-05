@@ -289,4 +289,28 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findAllBySearchAndStatus(searchTerm, status, pageable)
                 .map(articleMapper::toDetailedDto);
     }
+
+    @Override
+    public Detailed draftArticle(UUID id, User user) {
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article Not found"));
+        // Check if user can access this article
+
+        boolean isOwner = false;
+        boolean isAdmin = false;
+
+        if (user != null) {
+            isOwner = user.getId().equals(article.getUser().getId());
+            isAdmin = user != null && user.getRoles().stream()
+                    .anyMatch(role -> "ROLE_ADMIN".equals(role.getName().name()));
+        }
+
+        // Allow access if: article is published OR user is owner OR user is admin
+        if (!isAdmin && !isOwner) {
+            throw new ItemNotFoundException("Cannot perform this action");
+        }
+        article.setStatus(ArticleStatus.DRAFT);
+
+        return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
 }

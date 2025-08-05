@@ -113,6 +113,11 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.unpublishArticle(id, userDetails.getId()));
     }
 
+    @PostMapping("/convert-draft/{id}")
+    public ResponseEntity<?> convertArticleToDraft(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.draftArticle(id, userDetails));
+    }
+
     @GetMapping(path = "/for-review")
     public ResponseEntity<?> getReviewedArticlesByUser(@AuthenticationPrincipal User user, Pageable pageable) {
         return ResponseEntity.ok(articleService.getReviewArticlesByUser(user.getId(), pageable));

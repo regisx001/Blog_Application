@@ -95,6 +95,11 @@ public class ArticleAdminController {
         return ResponseEntity.ok(articleService.unpublishArticle(id, userDetails.getId()));
     }
 
+    @PostMapping("/convert-draft/{id}")
+    public ResponseEntity<?> convertArticleToDraft(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        return ResponseEntity.ok(articleService.draftArticle(id, userDetails));
+    }
+
     @Transactional
     @GetMapping("/export")
     public void exportArticlesToCsv(HttpServletResponse response) throws IOException {

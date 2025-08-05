@@ -50,6 +50,8 @@ public interface ArticleService {
 
     ArticleDto.Detailed rejectArticle(UUID id, ArticleDto.RejectionRequest rejectionRequest, User adminUser);
 
+    ArticleDto.Detailed draftArticle(UUID id, User user);
+
     // ============= USER-SPECIFIC OPERATIONS =============
 
     Page<ArticleDto.Draft> getUserDrafts(UUID authorId, Pageable pageable);
