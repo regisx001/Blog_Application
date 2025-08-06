@@ -70,7 +70,8 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
         // ---------------
 
         long startTime = System.currentTimeMillis();
-        if (isValidForAnalysis(article)) {
+
+        if (!isValidForAnalysis(article)) {
             throw new RuntimeException("Article doesn't meet basic requirements by system-analysis");
         }
 

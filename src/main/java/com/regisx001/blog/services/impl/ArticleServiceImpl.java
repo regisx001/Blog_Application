@@ -23,6 +23,7 @@ import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.repositories.UserRepository;
+import com.regisx001.blog.services.AIAnalyseService;
 import com.regisx001.blog.services.ArticleService;
 import com.regisx001.blog.services.StorageService;
 import com.regisx001.blog.services.TagService;
@@ -39,6 +40,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final TagService tagService;
     private final ArticleMapper articleMapper;
     private final StorageService storageService;
+    private final AIAnalyseService aiAnalyseService;
 
     @Override
     public Page<ArticleDto.Detailed> getPublishedArticles(Pageable pageable) {
@@ -146,7 +148,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 7. Save article
         Article savedArticle = articleRepository.save(article);
-
+        aiAnalyseService.analyseArticle(savedArticle.getId());
         // 8. Return detailed DTO
         return articleMapper.toDetailedDto(savedArticle);
     }
