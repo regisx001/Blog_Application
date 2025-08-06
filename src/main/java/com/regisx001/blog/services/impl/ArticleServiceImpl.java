@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -314,5 +315,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setStatus(ArticleStatus.DRAFT);
 
         return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
+
+    @Async
+    @Override
+    public void analyseArticleByAI(UUID id) {
+        aiAnalyseService.analyseArticle(id);
     }
 }

@@ -33,6 +33,8 @@ public interface ArticleService {
 
     ArticleDto.Detailed updateArticle(UUID id, ArticleDto.UpdateRequest request, UUID authorId);
 
+    void analyseArticleByAI(UUID id);
+
     void deleteArticle(UUID id, UUID authorId);
 
     void deleteArticlesInBatchById(Iterable<UUID> ids);
