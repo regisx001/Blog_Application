@@ -46,7 +46,10 @@ public class AIPromptTemplates {
 
 
             Title: {title}
+
+            <content>
             Content: {content}
+            </content>
 
             """;
 
