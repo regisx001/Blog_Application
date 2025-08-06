@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
+import com.regisx001.blog.domain.dto.responses.SuccessResponse;
 import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.User;
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
@@ -88,6 +89,13 @@ public class ArticleAdminController {
     @PostMapping("/publish/{id}")
     public ResponseEntity<?> publishArticle(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
         return ResponseEntity.ok(articleService.publishArticle(id, userDetails.getId()));
+    }
+
+    @PostMapping("/analyse-by-ai/{id}")
+    public ResponseEntity<?> analyseArticleWithAI(@PathVariable UUID id, @AuthenticationPrincipal User userDetails) {
+        articleService.analyseArticleByAI(id);
+        return ResponseEntity
+                .ok(SuccessResponse.builder().statusCode(200).message("Article is going to be analysed by ai").build());
     }
 
     @PostMapping("/unpublish/{id}")

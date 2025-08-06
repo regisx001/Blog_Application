@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import com.regisx001.blog.mappers.ArticleMapper;
 import com.regisx001.blog.repositories.ArticleRepository;
 import com.regisx001.blog.repositories.CategoryRepository;
 import com.regisx001.blog.repositories.UserRepository;
+import com.regisx001.blog.services.AIAnalyseService;
 import com.regisx001.blog.services.ArticleService;
 import com.regisx001.blog.services.StorageService;
 import com.regisx001.blog.services.TagService;
@@ -39,6 +41,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final TagService tagService;
     private final ArticleMapper articleMapper;
     private final StorageService storageService;
+    private final AIAnalyseService aiAnalyseService;
 
     @Override
     public Page<ArticleDto.Detailed> getPublishedArticles(Pageable pageable) {
@@ -114,9 +117,10 @@ public class ArticleServiceImpl implements ArticleService {
                             () -> new IllegalArgumentException("Category not found with id: " + request.category()));
         }
 
-        List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
-
         Article article = articleMapper.toEntity(request);
+
+        List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
+        ;
 
         String imagePath = null;
         if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
@@ -138,16 +142,19 @@ public class ArticleServiceImpl implements ArticleService {
             article.setStatus(ArticleStatus.PENDING_REVIEW);
         }
 
-        // 6. Set default values
         article.setIsPublished(request.isPublished() != null ? request.isPublished() : false);
         if (article.getIsPublished()) {
             article.setPublishedAt(LocalDateTime.now());
         }
 
-        // 7. Save article
         Article savedArticle = articleRepository.save(article);
 
-        // 8. Return detailed DTO
+        if (tags.isEmpty() || tags == null) {
+            tagService.generateTagsAsync(savedArticle);
+        }
+
+        aiAnalyseService.analyseArticle(savedArticle.getId());
+
         return articleMapper.toDetailedDto(savedArticle);
     }
 
@@ -312,5 +319,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setStatus(ArticleStatus.DRAFT);
 
         return articleMapper.toDetailedDto(articleRepository.save(article));
+    }
+
+    @Async
+    @Override
+    public void analyseArticleByAI(UUID id) {
+        aiAnalyseService.analyseArticle(id);
     }
 }
