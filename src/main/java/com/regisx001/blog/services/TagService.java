@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
 import com.regisx001.blog.domain.dto.TagDto;
+import com.regisx001.blog.domain.entities.Article;
 import com.regisx001.blog.domain.entities.Tag;
 
 public interface TagService {
@@ -19,4 +20,8 @@ public interface TagService {
     Page<ArticleDto.Detailed> getTagRelatedArticle(Pageable pageable, String tagName);
 
     List<Tag> createTagsIfNotExist(List<String> names);
+
+    void generateTagsAsync(Article article);
+
+    List<String> generateTagsManual(Article article);
 }

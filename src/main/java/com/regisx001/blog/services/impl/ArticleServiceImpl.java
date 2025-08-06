@@ -117,9 +117,10 @@ public class ArticleServiceImpl implements ArticleService {
                             () -> new IllegalArgumentException("Category not found with id: " + request.category()));
         }
 
-        List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
-
         Article article = articleMapper.toEntity(request);
+
+        List<Tag> tags = tagService.createTagsIfNotExist(request.tags());
+        ;
 
         String imagePath = null;
         if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
@@ -141,16 +142,19 @@ public class ArticleServiceImpl implements ArticleService {
             article.setStatus(ArticleStatus.PENDING_REVIEW);
         }
 
-        // 6. Set default values
         article.setIsPublished(request.isPublished() != null ? request.isPublished() : false);
         if (article.getIsPublished()) {
             article.setPublishedAt(LocalDateTime.now());
         }
 
-        // 7. Save article
         Article savedArticle = articleRepository.save(article);
+
+        if (tags.isEmpty() || tags == null) {
+            tagService.generateTagsAsync(savedArticle);
+        }
+
         aiAnalyseService.analyseArticle(savedArticle.getId());
-        // 8. Return detailed DTO
+
         return articleMapper.toDetailedDto(savedArticle);
     }
 

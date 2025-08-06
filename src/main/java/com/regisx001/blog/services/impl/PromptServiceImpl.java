@@ -19,4 +19,11 @@ public class PromptServiceImpl implements PromptService {
                 .replace("{content}", article.getContent());
     }
 
+    @Override
+    public String buildArticleAutoTagsGenerationPrompt(Article article) {
+        return AIPromptTemplates.AUTO_TAG_GENERATION_PROMPT
+                .replace("{title}", article.getTitle())
+                .replace("{content}", article.getContent());
+    }
+
 }
