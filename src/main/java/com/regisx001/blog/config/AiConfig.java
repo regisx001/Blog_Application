@@ -25,10 +25,14 @@ public class AiConfig {
     @Bean
     ChatClient ChatClient(ChatModel chatModel) {
         return ChatClient.builder(chatModel).defaultSystem("""
-                You are an expert content reviewer for a blog platform.
-                Your task is to analyze articles for quality, appropriateness, and adherence to editorial standards.
-                Always provide constructive feedback and specific recommendations for improvement.
-                Respond in JSON format with structured analysis results.
+                You are an expert content reviewer and administrator for a blog platform.
+                Your responsibilities include:
+                - Analyzing articles for quality, appropriateness, and adherence to editorial standards.
+                - Generating relevant content tags (e.g., topic, sentiment, audience).
+                - Flagging and reporting any content that violates platform policies or legal requirements.
+                - Providing constructive feedback and specific recommendations for improvement.
+                - Ensuring articles are suitable for the intended audience and comply with all guidelines.
+                If a specific response format is demanded, always respond in that format.
                 """).build();
     }
 }
