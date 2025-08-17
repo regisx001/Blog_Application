@@ -90,11 +90,14 @@ public class ArticleDto {
 
                         List<String> tags,
 
-                        @NotNull(message = "Status is required") ArticleStatus status,
+                        // @NotNull(message = "Status is required") ArticleStatus status,
 
                         Boolean isPublished,
+                        @ValidImage(message = "Invalid image file") MultipartFile featuredImage
 
-                        @Size(max = 255, message = "Featured image URL cannot exceed 255 characters") String featuredImage) {
+        // @Size(max = 255, message = "Featured image URL cannot exceed 255 characters")
+        // String featuredImage
+        ) {
         }
 
         // ============= PUBLISH/UNPUBLISH REQUEST =============

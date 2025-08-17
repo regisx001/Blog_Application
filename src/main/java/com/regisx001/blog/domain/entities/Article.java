@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -65,6 +67,7 @@ public class Article {
 
     private LocalDateTime publishedAt;
 
+    @Column(columnDefinition = "TEXT")
     private String feedback;
 
     @Column(nullable = false)
@@ -90,6 +93,12 @@ public class Article {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "article_tags", joinColumns = @JoinColumn(name = "article_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnalyseResult> analyseResults;
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnalyseHistory> analyseHistories;
 
     @PrePersist
     public void onCreate() {

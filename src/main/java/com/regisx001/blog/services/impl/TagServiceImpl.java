@@ -99,7 +99,21 @@ public class TagServiceImpl implements TagService {
                 throw new RuntimeException("AI service returned empty response");
             }
 
+            // Clean the response by removing markdown code block syntax
             String cleanedResponse = response.trim();
+
+            // Remove ```json or ``` at the beginning and end
+            if (cleanedResponse.startsWith("```json")) {
+                cleanedResponse = cleanedResponse.substring(7);
+            } else if (cleanedResponse.startsWith("```")) {
+                cleanedResponse = cleanedResponse.substring(3);
+            }
+
+            if (cleanedResponse.endsWith("```")) {
+                cleanedResponse = cleanedResponse.substring(0, cleanedResponse.length() - 3);
+            }
+
+            cleanedResponse = cleanedResponse.trim();
 
             List<String> tags = objectMapper.readValue(cleanedResponse, new TypeReference<List<String>>() {
             });
