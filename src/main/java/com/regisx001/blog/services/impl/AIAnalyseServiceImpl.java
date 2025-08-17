@@ -80,7 +80,8 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
         long endTime = System.currentTimeMillis();
         Integer analyzeTimeMs = (int) (endTime - startTime);
 
-        AnalyseResult result = buildApprovalResult(article, parseAIResponse(aiResponse), analyzeTimeMs);
+        AIAnalysisResponse analyseResponse = parseAIResponse(aiResponse);
+        AnalyseResult result = buildApprovalResult(article, analyseResponse, analyzeTimeMs);
         // article.setStatus(ArticleStatus.valueOf(result.getDecision().toString()));
         if (result.getDecision().equals(AnalyseDecision.APPROVED)) {
             article.setApprovedAt(LocalDateTime.now());
@@ -100,7 +101,7 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
         historySnapshot.setConfidenceScore(result.getConfidenceScore());
         historySnapshot.setProcessingTimeMs(analyzeTimeMs);
         // ---------------
-
+        // int fe = result.getAiAnalysis().length();
         article.setFeedback(result.getAiAnalysis());
         articleRepository.save(article);
         analyseHistoryRepository.save(historySnapshot);
@@ -116,7 +117,23 @@ public class AIAnalyseServiceImpl implements AIAnalyseService {
 
     private AIAnalysisResponse parseAIResponse(String response) {
         try {
-            return objectMapper.readValue(response, AIAnalysisResponse.class);
+            // Clean the response by removing markdown code block syntax
+            String cleanedResponse = response.trim();
+
+            // Remove ```json or ``` at the beginning and end
+            if (cleanedResponse.startsWith("```json")) {
+                cleanedResponse = cleanedResponse.substring(7);
+            } else if (cleanedResponse.startsWith("```")) {
+                cleanedResponse = cleanedResponse.substring(3);
+            }
+
+            if (cleanedResponse.endsWith("```")) {
+                cleanedResponse = cleanedResponse.substring(0, cleanedResponse.length() - 3);
+            }
+
+            cleanedResponse = cleanedResponse.trim();
+
+            return objectMapper.readValue(cleanedResponse, AIAnalysisResponse.class);
         } catch (Exception e) {
             return AIAnalysisResponse.builder()
                     .overallScore(0.5) // Neutral score

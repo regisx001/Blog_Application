@@ -6,4 +6,5 @@ public interface PromptService {
     String buildArticleAnalysisPrompt(Article article);
 
     String buildArticleAutoTagsGenerationPrompt(Article article);
+
 }

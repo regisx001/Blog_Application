@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping(path = "/api/v1/articles")
@@ -62,6 +63,12 @@ public class ArticleController {
         // return ResponseEntity.ok(articleService.getArticleById(id));
         return ResponseEntity.ok(articleService.getArticleByIdAndUser(id, user));
 
+    }
+
+    @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateArticle(@PathVariable UUID id,
+            @Valid @ModelAttribute ArticleDto.UpdateRequest updateRequest, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(articleService.updateArticle(id, updateRequest, user.getId()));
     }
 
     // TODO: FIX AND MERGE THIS WITH THE ONE ABOVE

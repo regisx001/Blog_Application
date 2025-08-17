@@ -16,14 +16,17 @@ public class PromptServiceImpl implements PromptService {
     public String buildArticleAnalysisPrompt(Article article) {
         return AIPromptTemplates.CONTENT_ANALYSIS_PROMPT
                 .replace("{title}", article.getTitle())
-                .replace("{content}", article.getContent());
+                .replace("{content}", removeHTMLTags(article.getContent()));
     }
 
     @Override
     public String buildArticleAutoTagsGenerationPrompt(Article article) {
         return AIPromptTemplates.AUTO_TAG_GENERATION_PROMPT
                 .replace("{title}", article.getTitle())
-                .replace("{content}", article.getContent());
+                .replace("{content}", removeHTMLTags(article.getContent()));
     }
 
+    private String removeHTMLTags(String content) {
+        return content.replaceAll("<[^>]*>", "");
+    }
 }

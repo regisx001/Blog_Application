@@ -160,8 +160,73 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleDto.Detailed updateArticle(UUID id, UpdateRequest request, UUID authorId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateArticle'");
+        // 1. Validate input parameters
+        if (id == null) {
+            throw new IllegalArgumentException("Article ID cannot be null");
+        }
+        if (request == null) {
+            throw new IllegalArgumentException("Update request cannot be null");
+        }
+        if (authorId == null) {
+            throw new IllegalArgumentException("Author ID cannot be null");
+        }
+
+        // 2. Find and validate article existence
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Article not found with id: " + id));
+
+        // 3. Validate user exists and has permission to update
+        User author = userRepository.findById(authorId)
+                .orElseThrow(() -> new ItemNotFoundException("User not found with id: " + authorId));
+
+        // 4. Check ownership and permissions
+        boolean isOwner = article.getUser().getId().equals(authorId);
+        boolean isAdmin = author.getRoles().stream()
+                .anyMatch(role -> "ROLE_ADMIN".equals(role.getName().name()));
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You don't have permission to update this article");
+        }
+
+        // 5. Validate article status - only allow updates for certain statuses
+        if (article.getStatus() == ArticleStatus.PUBLISHED && !isAdmin) {
+            throw new IllegalStateException("Published articles can only be updated by administrators");
+        }
+
+        // 6. Update basic fields (title and content are required in DTO)
+        article.setTitle(request.title().trim());
+        article.setContent(request.content().trim());
+
+        // 7. Update category if provided (using categoryId from DTO)
+        if (request.categoryId() != null) {
+            Category category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(
+                            () -> new ItemNotFoundException("Category not found with id: " + request.categoryId()));
+            article.setCategory(category);
+        }
+
+        // 8. Update tags if provided
+        if (request.tags() != null) {
+            List<Tag> newTags = tagService.createTagsIfNotExist(request.tags());
+            article.setTags(newTags);
+        }
+
+        // 9. Handle featured image update
+        if (request.featuredImage() != null && !request.featuredImage().isEmpty()) {
+            try {
+                // Store new image (note: old image cleanup not implemented in StorageService)
+                String newImagePath = storageService.store(request.featuredImage());
+                article.setFeaturedImage(newImagePath);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to update featured image: " + e.getMessage(), e);
+            }
+        }
+
+        // 14. Save the updated article
+        Article savedArticle = articleRepository.save(article);
+
+        // 16. Return updated article DTO
+        return articleMapper.toDetailedDto(savedArticle);
     }
 
     @Override
