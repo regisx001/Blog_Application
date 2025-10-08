@@ -35,4 +35,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
                         @Param("enabled") Boolean enabled,
                         Pageable pageable);
 
+        long countByEnabled(boolean isEnabled);
 }
