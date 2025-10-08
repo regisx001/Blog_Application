@@ -90,6 +90,11 @@ public class UserAdminController {
         return new ResponseEntity<SuccessResponse>(response, null, 200);
     }
 
+    @GetMapping("/analytics")
+    public ResponseEntity<?> getUserAnalytics() {
+        return ResponseEntity.ok(userService.getUsersAnalytics());
+    }
+
     @Transactional
     @GetMapping("/export")
     public void exportUsersToCsv(HttpServletResponse response) throws IOException {

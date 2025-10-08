@@ -101,4 +101,10 @@ public class UserDto {
                         UUID id,
                         String username) {
         }
+
+        public record Analytics(
+                        long totalUsers,
+                        long activeUsers,
+                        long nonActiveUsers) {
+        }
 }

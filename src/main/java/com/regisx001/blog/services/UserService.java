@@ -28,4 +28,5 @@ public interface UserService {
 
     void changeEnable(UUID userId, boolean enable);
 
+    UserDto.Analytics getUsersAnalytics();
 }

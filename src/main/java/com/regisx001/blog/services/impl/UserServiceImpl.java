@@ -1,6 +1,7 @@
 package com.regisx001.blog.services.impl;
 
 import com.regisx001.blog.domain.dto.UserDto;
+import com.regisx001.blog.domain.dto.UserDto.Analytics;
 import com.regisx001.blog.domain.dto.UserDto.Detailed;
 import com.regisx001.blog.domain.dto.requests.UpdateUserRequest;
 import com.regisx001.blog.domain.entities.Role;
@@ -94,6 +95,15 @@ public class UserServiceImpl implements UserService {
     public Page<Detailed> getAllUsersByFilters(String searchTermsn, RoleType role, Boolean enabled, Pageable pageable) {
         return userRepository.findAllBySearchAndRoleAndEnabled(searchTermsn, role, enabled, pageable)
                 .map(userMapper::toDetailedDto);
+    }
+
+    @Override
+    public Analytics getUsersAnalytics() {
+        long totalUsers = userRepository.count();
+        long activeUser = userRepository.countByEnabled(true);
+        long nonActiveUser = userRepository.countByEnabled(false);
+
+        return new UserDto.Analytics(totalUsers, activeUser, nonActiveUser);
     }
 
 }
