@@ -10,7 +10,6 @@ import com.regisx001.blog.domain.entities.Enums.ArticleStatus;
 import com.regisx001.blog.validation.ValidImage;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class ArticleDto {
@@ -133,5 +132,8 @@ public class ArticleDto {
 
         public record RejectionRequest(
                         String feedback) {
+        }
+
+        public record AnalyticsDto() {
         }
 }

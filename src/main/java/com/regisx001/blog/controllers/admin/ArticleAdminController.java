@@ -134,4 +134,9 @@ public class ArticleAdminController {
 
         writer.flush();
     }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<?> getArticlesAnalytics() {
+        return ResponseEntity.ok("");
+    }
 }

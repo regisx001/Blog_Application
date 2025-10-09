@@ -34,6 +34,15 @@ spring:
       chat:
         options:
           model: ${GROQ_MODEL}
+  # kafka:
+  #   bootstrap-servers:
+  #     - localhost:9092
+  #   consumer:
+  #     group-id: blog-analytics
+  #     auto-offset-reset: earliest
+  #   producer:
+  #     key-serializer: org.apache.kafka.common.serialization.StringSerializer
+  #     value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 security:
   jwt:

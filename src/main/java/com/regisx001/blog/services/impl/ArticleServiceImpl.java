@@ -10,6 +10,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.regisx001.blog.domain.dto.ArticleDto;
+import com.regisx001.blog.domain.dto.ArticleDto.AnalyticsDto;
 import com.regisx001.blog.domain.dto.ArticleDto.Detailed;
 import com.regisx001.blog.domain.dto.ArticleDto.RejectionRequest;
 import com.regisx001.blog.domain.dto.ArticleDto.UpdateRequest;
@@ -390,5 +391,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void analyseArticleByAI(UUID id) {
         aiAnalyseService.analyseArticle(id);
+    }
+
+    @Override
+    public AnalyticsDto getAnalytics() {
+
+        return new AnalyticsDto();
     }
 }

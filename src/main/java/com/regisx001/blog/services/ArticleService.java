@@ -66,4 +66,5 @@ public interface ArticleService {
 
     Page<ArticleDto.Detailed> getArticlesByStatus(ArticleStatus status, Pageable pageable);
 
+    ArticleDto.AnalyticsDto getAnalytics();
 }
